@@ -1,17 +1,36 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect, memo } from "react";
 import TypewriterText from "./TypewriterText";
+import TechStack from "./TechStack";
 
 interface HeroSectionProps {
   onViewProjects: () => void;
 }
 
-export default function HeroSection({ onViewProjects }: HeroSectionProps) {
+const HeroSection = memo(function HeroSection({
+  onViewProjects,
+}: HeroSectionProps) {
+  const [particles, setParticles] = useState<
+    Array<{ left: string; top: string }>
+  >([]);
+  const [isClient, setIsClient] = useState(false);
+
   const typewriterTexts = [
     "It's dangerous to ship alone.",
     "import Klaus from './developers'",
   ];
+
+  // Generate particles only on client side to prevent hydration mismatch
+  useEffect(() => {
+    setIsClient(true);
+    const generatedParticles = [...Array(20)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+    }));
+    setParticles(generatedParticles);
+  }, []);
 
   return (
     <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
@@ -27,11 +46,11 @@ export default function HeroSection({ onViewProjects }: HeroSectionProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="mb-8"
+          className="mb-8 h-24 md:h-32 lg:h-36 flex items-center justify-center"
         >
           <TypewriterText
             texts={typewriterTexts}
-            speed={80}
+            speed={60}
             delay={2000}
             className="leading-relaxed"
           />
@@ -86,7 +105,9 @@ export default function HeroSection({ onViewProjects }: HeroSectionProps) {
           {/* Glow effect */}
           <div className="absolute inset-0 rounded-full bg-linear-to-r from-blue-400/20 to-purple-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </motion.button>
-
+        <div className="relative z-10 mt-40">
+          <TechStack />
+        </div>
         {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -109,27 +130,31 @@ export default function HeroSection({ onViewProjects }: HeroSectionProps) {
       </motion.div>
 
       {/* Floating particles effect */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-white/20 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -100, 0],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: 3 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
+      {isClient && (
+        <div className="absolute inset-0 pointer-events-none">
+          {particles.map((particle, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-white/20 rounded-full"
+              style={{
+                left: particle.left,
+                top: particle.top,
+              }}
+              animate={{
+                y: [0, -100, 0],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: 3 + Math.random() * 2,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+});
+
+export default HeroSection;

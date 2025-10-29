@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
 import { motion } from "framer-motion";
 
 interface TypewriterTextProps {
@@ -10,9 +10,9 @@ interface TypewriterTextProps {
   className?: string;
 }
 
-export default function TypewriterText({
+const TypewriterText = memo(function TypewriterText({
   texts,
-  speed = 100,
+  speed = 250,
   delay = 1000,
   className = "",
 }: TypewriterTextProps) {
@@ -21,43 +21,33 @@ export default function TypewriterText({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
 
+  const updateText = useCallback(() => {
+    const fullText = texts[currentTextIndex];
+
+    if (isWaiting) {
+      setIsWaiting(false);
+      setIsDeleting(true);
+      return;
+    }
+
+    if (isDeleting) {
+      setCurrentText(fullText.substring(0, currentText.length - 1));
+      if (currentText.length === 0) {
+        setIsDeleting(false);
+        setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+      }
+    } else {
+      setCurrentText(fullText.substring(0, currentText.length + 1));
+      if (currentText === fullText) {
+        setIsWaiting(true);
+      }
+    }
+  }, [currentText, currentTextIndex, isDeleting, isWaiting, texts]);
+
   useEffect(() => {
-    const timeout = setTimeout(
-      () => {
-        const fullText = texts[currentTextIndex];
-
-        if (isWaiting) {
-          setIsWaiting(false);
-          setIsDeleting(true);
-          return;
-        }
-
-        if (isDeleting) {
-          setCurrentText(fullText.substring(0, currentText.length - 1));
-          if (currentText.length === 0) {
-            setIsDeleting(false);
-            setCurrentTextIndex((prev) => (prev + 1) % texts.length);
-          }
-        } else {
-          setCurrentText(fullText.substring(0, currentText.length + 1));
-          if (currentText === fullText) {
-            setIsWaiting(true);
-          }
-        }
-      },
-      isWaiting ? delay : speed
-    );
-
+    const timeout = setTimeout(updateText, isWaiting ? delay : speed);
     return () => clearTimeout(timeout);
-  }, [
-    currentText,
-    currentTextIndex,
-    isDeleting,
-    isWaiting,
-    texts,
-    speed,
-    delay,
-  ]);
+  }, [updateText, isWaiting, delay, speed]);
 
   return (
     <div className={`font-mono text-2xl md:text-4xl lg:text-5xl ${className}`}>
@@ -71,4 +61,6 @@ export default function TypewriterText({
       </motion.span>
     </div>
   );
-}
+});
+
+export default TypewriterText;
