@@ -137,13 +137,8 @@ export default function ClientPage() {
                 delay={5000}
                 pauseOnHover={false}
                 onCardClick={(idx) => {
-                  const ids = [
-                    "hero",
-                    "tech",
-                    "projects",
-                    "about",
-                    // "contact", // Temporarily hidden until email DNS is configured
-                  ] as const;
+                  // Map in the same order as the cards below: Home, Projects, About
+                  const ids = ["hero", "projects", "about"] as const;
                   const id = ids[idx] ?? "hero";
                   const el = document.getElementById(id);
                   if (el)

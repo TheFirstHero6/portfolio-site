@@ -21,7 +21,7 @@ export default function About() {
           <p className="text-white/80 leading-relaxed text-base md:text-lg">
             Hi, I'm Klaus! I'm a developer who specializes in React/Next.js. I
             am a full-stack developer with a focus on modern, high-performing
-            frontends.
+            frontends (like this one!).
           </p>
           <div className="h-3" />
           <p className="text-white/80 leading-relaxed text-base md:text-lg">
