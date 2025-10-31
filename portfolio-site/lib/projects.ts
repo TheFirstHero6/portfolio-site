@@ -24,7 +24,7 @@ export const projects: Project[] = [
     image: "/globe.svg",
     link: "https://www.waroftheelector.space/",
     featured: true,
-    year: "2024",
+    year: "2025",
     category: "Web Experience",
     highlights: [
       "Immersive thematic design",
