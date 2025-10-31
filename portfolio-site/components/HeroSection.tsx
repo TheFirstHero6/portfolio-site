@@ -9,10 +9,12 @@ import TextPressure from "./ui/TextPressure";
 
 interface HeroSectionProps {
   onViewProjects: () => void;
+  onContactClick?: () => void;
 }
 
 const HeroSection = memo(function HeroSection({
   onViewProjects,
+  onContactClick,
 }: HeroSectionProps) {
   const [particles, setParticles] = useState<
     Array<{ left: string; top: string }>
@@ -94,7 +96,7 @@ const HeroSection = memo(function HeroSection({
               React Specialist
             </span>
             <span className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-              TypeScript Expert
+              Skilled in TypeScript
             </span>
           </div>
         </motion.div>
@@ -110,16 +112,16 @@ const HeroSection = memo(function HeroSection({
             <div className="flex items-center gap-1">
               <button
                 onClick={onViewProjects}
-                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white transition-colors"
+                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white hover:bg-white/15 active:scale-[0.98] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-sm hover:shadow-lg hover:translate-y-px cursor-pointer"
               >
                 View My Projects
               </button>
-              <a
-                href="#contact"
-                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white transition-colors"
+              <button
+                onClick={onContactClick}
+                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white hover:bg-white/15 active:scale-[0.98] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-sm hover:shadow-lg hover:translate-y-px cursor-pointer"
               >
                 Contact
-              </a>
+              </button>
             </div>
           </div>
         </motion.div>

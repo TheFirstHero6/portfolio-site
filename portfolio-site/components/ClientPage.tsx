@@ -24,6 +24,7 @@ const Silk = dynamic(() => import("./Silk"), {
 
 export default function ClientPage() {
   const [showCarousel, setShowCarousel] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showCtrlKHint, setShowCtrlKHint] = useState(false);
   const silkRef = useRef<{ updateColor: (newColor: string) => void }>(null);
@@ -80,11 +81,11 @@ export default function ClientPage() {
   }, []);
 
   const handleViewProjects = () => {
-    setShowCarousel(true);
-    // Example color change when viewing projects
-    if (silkRef.current) {
-      silkRef.current.updateColor("#8B5CF6"); // Purple for projects
-    }
+    const el = document.getElementById("projects");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const handleContactClick = () => {
+    setShowContactModal(true);
   };
 
   return (
@@ -92,9 +93,9 @@ export default function ClientPage() {
       <CommandPalette
         items={[
           { id: "hero", label: "Home", group: "Section" },
+          { id: "about", label: "About", group: "Section" },
           { id: "tech", label: "Stack", group: "Section" },
           { id: "projects", label: "Projects", group: "Section" },
-          { id: "about", label: "About", group: "Section" },
           // { id: "contact", label: "Contact", group: "Section" }, // Temporarily hidden until email DNS is configured
           ...projects.map((p) => ({
             id: "projects",
@@ -112,9 +113,9 @@ export default function ClientPage() {
       <Dock
         items={[
           { id: "hero", label: "Home" },
+          { id: "about", label: "About" },
           { id: "tech", label: "Stack" },
           { id: "projects", label: "Projects" },
-          { id: "about", label: "About" },
           // { id: "contact", label: "Contact" }, // Temporarily hidden until email DNS is configured
         ]}
       />
@@ -211,6 +212,39 @@ export default function ClientPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Simple Contact Modal */}
+      <AnimatePresence>
+        {showContactModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowContactModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              className="max-w-md w-full bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 text-center text-white"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-bold mb-2">Get in touch</h3>
+              <p className="text-white/80 mb-4">
+                Feel free to reach out at{" "}
+                <span className="font-medium">klaus.dev@kclabs.app</span> to
+                connect.
+              </p>
+              <button
+                onClick={() => setShowContactModal(false)}
+                className="mt-2 px-4 py-2 rounded-lg bg-white/20 hover:bg白/30 hover:bg-white/30 transition-colors"
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Animated Silk Background with hover hint */}
       <div ref={silkLayerRef} className="absolute inset-0 z-0 overflow-hidden">
         <Silk
@@ -247,7 +281,10 @@ export default function ClientPage() {
 
       {/* Hero Section */}
       <section id="hero" ref={heroRef} className="overflow-x-hidden">
-        <HeroSection onViewProjects={handleViewProjects} />
+        <HeroSection
+          onViewProjects={handleViewProjects}
+          onContactClick={handleContactClick}
+        />
       </section>
 
       {/* About above tech */}
