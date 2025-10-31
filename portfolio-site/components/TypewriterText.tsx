@@ -50,7 +50,9 @@ const TypewriterText = memo(function TypewriterText({
   }, [updateText, isWaiting, delay, speed]);
 
   return (
-    <div className={`font-mono text-2xl md:text-4xl lg:text-5xl ${className}`}>
+    <div
+      className={`font-mono text-xl sm:text-2xl md:text-4xl lg:text-5xl whitespace-normal sm:whitespace-nowrap overflow-hidden max-w-[92vw] mx-auto ${className}`}
+    >
       <span className="text-white/90">{currentText}</span>
       <motion.span
         animate={{ opacity: [1, 0, 1] }}

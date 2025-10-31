@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { useState, useEffect, memo } from "react";
 import TypewriterText from "./TypewriterText";
 import TechStack from "./TechStack";
+import DecryptedText from "./ui/TextPressure";
+import TextPressure from "./ui/TextPressure";
 
 interface HeroSectionProps {
   onViewProjects: () => void;
@@ -33,20 +35,21 @@ const HeroSection = memo(function HeroSection({
   }, []);
 
   return (
-    <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
+    <div className="relative z-10 flex flex-col items-center justify-center min-h-svh px-3 sm:px-4 md:px-8 text-center overflow-hidden">
       {/* Main Content Container */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="max-w-4xl mx-auto"
+        data-foreground
       >
         {/* Typewriter Animation */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="mb-8 h-24 md:h-32 lg:h-36 flex items-center justify-center"
+          className="mb-4 md:mb-6 h-16 md:h-32 lg:h-36 flex items-center justify-center"
         >
           <TypewriterText
             texts={typewriterTexts}
@@ -61,59 +64,72 @@ const HeroSection = memo(function HeroSection({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.6 }}
-          className="mb-12"
+          className="mb-6 md:mb-12 overflow-visible"
         >
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 tracking-tight">
-            Klaus
-          </h1>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-lg md:text-xl text-white/80">
-            <span className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+          <h3 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4 overflow-visible">
+            Klaus Chamberlain
+            <br />
+            <div className="flex justify-center">
+              <span className="inline-block mx-auto w-fit leading-none overflow-visible tracking-[0.2em] md:tracking-[0.5em] max-w-[92vw] sm:max-w-none sm:whitespace-pre">
+                <TextPressure
+                  text="Full Stack Developer"
+                  flex={false}
+                  alpha={false}
+                  stroke={false}
+                  width={false}
+                  weight={true}
+                  italic={false}
+                  textColor="#ffffff"
+                  strokeColor="#ff0000"
+                  minFontSize={36}
+                />
+              </span>
+            </div>
+          </h3>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 text-sm md:text-xl text-white/80">
+            <span className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
               Next.js Developer
             </span>
-            <span className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+            <span className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
               React Specialist
             </span>
-            <span className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+            <span className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
               TypeScript Expert
             </span>
           </div>
         </motion.div>
 
-        {/* CTA Button */}
-        <motion.button
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.8, duration: 0.5 }}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-          }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onViewProjects}
-          className="group relative px-8 py-4 bg-linear-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-xl border border-white/30 rounded-full text-white font-semibold text-lg transition-all duration-300 hover:border-white/50 overflow-hidden"
+        {/* CTA Dock (glass) */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6, duration: 0.5 }}
+          className="flex items-center justify-center"
         >
-          <span className="relative z-10">View My Projects</span>
-
-          {/* Animated background gradient */}
-          <motion.div
-            className="absolute inset-0 bg-linear-to-r from-blue-500/30 to-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            initial={{ x: "-100%" }}
-            whileHover={{ x: "100%" }}
-            transition={{ duration: 0.6 }}
-          />
-
-          {/* Glow effect */}
-          <div className="absolute inset-0 rounded-full bg-linear-to-r from-blue-400/20 to-purple-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </motion.button>
-        <div className="relative z-10 mt-40">
-          <TechStack />
-        </div>
+          <div className="glass glass-border rounded-2xl px-2 py-1 shadow-lg">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={onViewProjects}
+                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white transition-colors"
+              >
+                View My Projects
+              </button>
+              <a
+                href="#contact"
+                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white transition-colors"
+              >
+                Contact
+              </a>
+            </div>
+          </div>
+        </motion.div>
+        {/* TechStack moved out of flow to avoid affecting centering */}
         {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5, duration: 0.6 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          className="hidden md:block absolute bottom-8 left-1/2 transform -translate-x-1/2"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
@@ -128,6 +144,18 @@ const HeroSection = memo(function HeroSection({
           </motion.div>
         </motion.div>
       </motion.div>
+
+      {/* TechStack anchored near bottom, not part of centered group */}
+      <div className="hidden md:block absolute inset-x-0 bottom-24 px-4 md:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "0px 0px -80px 0px" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          {/* <TechStack /> */}
+        </motion.div>
+      </div>
 
       {/* Floating particles effect */}
       {isClient && (
