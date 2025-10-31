@@ -42,7 +42,7 @@ export default function About() {
           <div className="h-3" />
           <p className="text-white/80 leading-relaxed text-base md:text-lg">
             Have an inquiry or project you'd like to discuss? Let's connect!
-            Feel free to reach out at klaus.dev@kclabs.app.
+            Feel free to reach through the contact form below!
           </p>
 
           <motion.div
@@ -52,18 +52,29 @@ export default function About() {
             transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
             className="mt-6 flex flex-wrap items-center gap-3"
           >
-            {/* Temporarily hidden until email DNS is configured */}
-            {/* <a
-              href="#contact"
-              className="px-5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white border border-white/20 transition-transform will-change-transform hover:scale-[1.03]"
-            >
-              Get in touch
-            </a> */}
             <a
               href="#projects"
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById("projects");
+                if (el)
+                  el.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
               className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/85 border border-white/20 transition-transform will-change-transform hover:scale-[1.03]"
             >
               View projects
+            </a>
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById("contact");
+                if (el)
+                  el.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              className="px-5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white border border-white/20 transition-transform will-change-transform hover:scale-[1.03]"
+            >
+              Let's connect
             </a>
           </motion.div>
         </motion.div>

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser";
+import Stepper, { Step } from "./ui/Stepper";
 
 type FormState = {
   name: string;
@@ -32,163 +34,90 @@ export default function ContactForm() {
     form.message.trim().length >= 10 &&
     !loading;
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    // Double-check validation before submitting
+  async function onSubmit() {
     if (!canSubmit) {
-      console.log("Form validation failed:", {
-        name: form.name.trim().length,
-        emailValid: validEmail(form.email),
-        messageLength: form.message.trim().length,
-        loading,
-      });
+      setTouched({ name: true, email: true, message: true });
       return;
     }
-
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    if (!serviceId || !templateId || !publicKey) {
+      setSent({ ok: false, error: "Email service not configured. Please set NEXT_PUBLIC_EMAILJS_* env vars." });
+      return;
+    }
     setLoading(true);
     setSent(null);
-
     try {
-      // Send request to API
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          message: form.message.trim(),
-        }),
-      });
-
-      // Parse response
-      const json = await res.json().catch(() => ({}));
-
-      // Check if request was successful
-      if (!res.ok) {
-        throw new Error(json?.error || `Server error: ${res.status}`);
+      const result = await emailjs.send(
+        serviceId,
+        templateId,
+        { from_name: form.name.trim(), from_email: form.email.trim(), message: form.message.trim() },
+        { publicKey }
+      );
+      if (!(result && (result.text === "OK" || (result as any).status === 200))) {
+        throw new Error("EmailJS failed to send.");
       }
-
-      // Success!
       setSent({ ok: true });
       setForm({ name: "", email: "", message: "" });
-      setTouched({}); // Reset touched state
+      setTouched({});
     } catch (err: any) {
-      console.error("Form submission error:", err);
-      setSent({ ok: false, error: err?.message || "Something went wrong" });
+      console.error("EmailJS error:", err);
+      setSent({ ok: false, error: err?.message || "Failed to send. Try again later." });
     } finally {
       setLoading(false);
     }
   }
 
+  const canProceedStep = (step: number) => {
+    if (step === 1) return true;
+    if (step === 2) return form.name.trim().length >= 2;
+    if (step === 3) return validEmail(form.email);
+    if (step === 4) return form.message.trim().length >= 10;
+    return true;
+  };
+
   return (
-    <motion.form
-      onSubmit={onSubmit}
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.45, ease: "easeOut" }}
       className="glass glass-border rounded-2xl p-6 md:p-8 border border-white/10 max-w-2xl mx-auto"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <label className="text-left">
-          <span className="block text-sm text-white/80 mb-1">Name</span>
-          <input
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            onBlur={() => setTouched((t) => ({ ...t, name: true }))}
-            aria-invalid={touched.name && form.name.trim().length < 2}
-            aria-describedby="name-help"
-            placeholder="Your name"
-            className="w-full rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-white placeholder-white/50 outline-none focus:border-white/40"
-            required
-            minLength={2}
-          />
-          {touched.name && form.name.trim().length < 2 && (
-            <span id="name-help" className="mt-1 block text-xs text-red-300">
-              Please enter at least 2 characters.
-            </span>
-          )}
-        </label>
-        <label className="text-left">
-          <span className="block text-sm text-white/80 mb-1">Email</span>
-          <input
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            onBlur={() => setTouched((t) => ({ ...t, email: true }))}
-            aria-invalid={touched.email && !validEmail(form.email)}
-            aria-describedby="email-help"
-            placeholder="you@example.com"
-            className="w-full rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-white placeholder-white/50 outline-none focus:border-white/40"
-            required
-          />
-          {touched.email && !validEmail(form.email) && (
-            <span id="email-help" className="mt-1 block text-xs text-red-300">
-              Enter a valid email address.
-            </span>
-          )}
-        </label>
-      </div>
-      <label className="block mt-4 text-left">
-        <span className="block text-sm text-white/80 mb-1">Message</span>
-        <textarea
-          value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
-          onBlur={() => setTouched((t) => ({ ...t, message: true }))}
-          aria-invalid={touched.message && form.message.trim().length < 10}
-          aria-describedby="message-help"
-          placeholder="Tell me about your project or question..."
-          rows={6}
-          className="w-full rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-white placeholder-white/50 outline-none focus:border-white/40 resize-y"
-          required
-          minLength={10}
-        />
-        {touched.message && form.message.trim().length < 10 && (
-          <span id="message-help" className="mt-1 block text-xs text-red-300">
-            Please write at least 10 characters.
-          </span>
-        )}
-      </label>
+      <Stepper initialStep={1} onFinalStepCompleted={onSubmit} canProceed={canProceedStep} backButtonText="Previous" nextButtonText={loading ? "Sending…" : "Next"}>
+        <Step>
+          <h3 className="text-xl font-semibold text-white mb-2">Say hello 👋</h3>
+          <p className="text-white/70">I’ll reply as soon as I can.</p>
+        </Step>
+        <Step>
+          <label className="block text-left">
+            <span className="block text-sm text-white/80 mb-1">Name</span>
+            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} onBlur={() => setTouched((t) => ({ ...t, name: true }))} aria-invalid={touched.name && form.name.trim().length < 2} aria-describedby="name-help" placeholder="Your name" className="w-full rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-white placeholder-white/50 outline-none focus:border-white/40" required minLength={2} />
+            {touched.name && form.name.trim().length < 2 && <span id="name-help" className="mt-1 block text-xs text-red-300">Please enter at least 2 characters.</span>}
+          </label>
+        </Step>
+        <Step>
+          <label className="block text-left">
+            <span className="block text-sm text白/80 text-white/80 mb-1">Email</span>
+            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} onBlur={() => setTouched((t) => ({ ...t, email: true }))} aria-invalid={touched.email && !validEmail(form.email)} aria-describedby="email-help" placeholder="you@example.com" className="w-full rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-white placeholder-white/50 outline-none focus:border-white/40" required />
+            {touched.email && !validEmail(form.email) && <span id="email-help" className="mt-1 block text-xs text-red-300">Enter a valid email address.</span>}
+          </label>
+        </Step>
+        <Step>
+          <label className="block text-left">
+            <span className="block text-sm text-white/80 mb-1">Message</span>
+            <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} onBlur={() => setTouched((t) => ({ ...t, message: true }))} aria-invalid={touched.message && form.message.trim().length < 10} aria-describedby="message-help" placeholder="Tell me about your project or question..." rows={6} className="w-full rounded-lg bg-white/10 border border-white/20 px-3 py-2 text-white placeholder-white/50 outline-none focus:border-white/40 resize-y" required minLength={10} />
+            {touched.message && form.message.trim().length < 10 && <span id="message-help" className="mt-1 block text-xs text-red-300">Please write at least 10 characters.</span>}
+          </label>
+          <p className="mt-3 text-xs text-white/60">Powered by EmailJS. Your message is sent securely using your email provider.</p>
+        </Step>
+      </Stepper>
 
-      <div className="mt-5 flex items-center gap-3">
-        <motion.button
-          whileTap={{ scale: canSubmit ? 0.98 : 1 }}
-          type="submit"
-          disabled={!canSubmit}
-          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-colors ${
-            canSubmit
-              ? "bg-white/20 hover:bg-white/30 text-white"
-              : "bg-white/10 text-white/60 cursor-not-allowed"
-          }`}
-        >
-          {loading ? "Sending…" : "Send Message"}
-        </motion.button>
-        <span aria-live="polite" role="status" className="min-w-[1ch]">
-          {sent?.ok && (
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-green-300 text-sm"
-            >
-              Message sent! I’ll get back to you soon.
-            </motion.span>
-          )}
-          {sent && !sent.ok && (
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-red-300 text-sm"
-            >
-              {sent.error}
-            </motion.span>
-          )}
-        </span>
+      <div className="mt-4 min-h-[20px]" aria-live="polite" role="status">
+        {sent?.ok && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-green-300 text-sm">Message sent! I’ll get back to you soon.</motion.span>}
+        {sent && !sent.ok && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-300 text-sm">{sent.error}</motion.span>}
       </div>
-
-      <p className="mt-3 text-xs text-white/60">
-        This will email klaus.dev@kclabs.app via your API route.
-      </p>
-    </motion.form>
+    </motion.div>
   );
 }

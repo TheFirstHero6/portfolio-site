@@ -85,7 +85,8 @@ export default function ClientPage() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const handleContactClick = () => {
-    setShowContactModal(true);
+    const el = document.getElementById("contact");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -96,7 +97,7 @@ export default function ClientPage() {
           { id: "about", label: "About", group: "Section" },
           { id: "tech", label: "Stack", group: "Section" },
           { id: "projects", label: "Projects", group: "Section" },
-          // { id: "contact", label: "Contact", group: "Section" }, // Temporarily hidden until email DNS is configured
+          { id: "contact", label: "Contact", group: "Section" },
           ...projects.map((p) => ({
             id: "projects",
             label: p.title,
@@ -116,7 +117,7 @@ export default function ClientPage() {
           { id: "about", label: "About" },
           { id: "tech", label: "Stack" },
           { id: "projects", label: "Projects" },
-          // { id: "contact", label: "Contact" }, // Temporarily hidden until email DNS is configured
+          { id: "contact", label: "Contact" },
         ]}
       />
 
@@ -138,8 +139,8 @@ export default function ClientPage() {
                 delay={5000}
                 pauseOnHover={false}
                 onCardClick={(idx) => {
-                  // Map in the same order as the cards below: Home, Projects, About
-                  const ids = ["hero", "projects", "about"] as const;
+                  // Map: Home, Projects, About, Contact
+                  const ids = ["hero", "projects", "about", "contact"] as const;
                   const id = ids[idx] ?? "hero";
                   const el = document.getElementById(id);
                   if (el)
@@ -190,8 +191,8 @@ export default function ClientPage() {
                     ))}
                   </ul>
                 </SwapCard>
-                {/* Contact - Temporarily hidden until email DNS is configured */}
-                {/* <SwapCard className="bg-white/10 backdrop-blur-xl border-white/20 text-white p-6 min-w-[260px]">
+                {/* Contact */}
+                <SwapCard className="bg-white/10 backdrop-blur-xl border-white/20 text-white p-6 min-w-[260px]">
                   <h3 className="text-xl font-semibold mb-1">Contact</h3>
                   <p className="text-white/70 text-sm mb-3">
                     Email • Socials • Availability
@@ -203,10 +204,10 @@ export default function ClientPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/60" />
-                      Have an inquiry? Reach out through the contact form!
+                      Have an inquiry? Use the contact form below!
                     </div>
                   </div>
-                </SwapCard> */}
+                </SwapCard>
               </CardSwap>
             </div>
           </motion.div>
@@ -395,13 +396,12 @@ export default function ClientPage() {
         <Projects />
       </section>
 
-      {/* Contact section - Temporarily hidden until email DNS is configured */}
-      {/* <section
+      <section
         id="contact"
         className="relative z-10 min-h-[50vh] flex items-center justify-center px-4 md:px-8"
       >
         <Contact />
-      </section> */}
+      </section>
     </div>
   );
 }
