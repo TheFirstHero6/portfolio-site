@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { projects } from "../lib/projects";
 
 export default function Projects() {
@@ -50,6 +51,18 @@ export default function Projects() {
                 viewport={{ once: true }}
                 className="group relative overflow-hidden rounded-2xl transition-colors duration-200 will-change-transform transform-gpu bg-white/10 border border-white/10 hover:border-white/20"
               >
+                {project.image && (
+                  <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-t-2xl">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                      unoptimized
+                    />
+                  </div>
+                )}
                 <div className="p-4 md:p-8">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">

@@ -19,9 +19,15 @@ export const projects: Project[] = [
     title: "War of the Elector",
     subtitle: "Strategy experience site",
     description:
-      "A thematic experience with bold iconography and atmosphere. Features immersive UI flourishes, custom animations, and a cohesive design system that transports users into a strategic gaming world.",
-    technologies: ["Next.js", "TypeScript", "TailwindCSS", "Framer Motion"],
-    image: "/globe.svg",
+      "The official website for 'War of the Elector,' a grand Real-Time-Strategy game set in a richly detailed fantasy world. This site features complex state management, modern responsive UI/UX, and more!.",
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "TailwindCSS",
+      "Prisma ORM",
+      "PostgreSQL",
+    ],
+    image: "/image.png",
     link: "https://www.waroftheelector.space/",
     featured: true,
     year: "2025",
