@@ -73,7 +73,7 @@ export default function About() {
             <p className="text-body-lg text-white/85 leading-relaxed">
               At the time of writing, RTS game{" "}
               <span className="text-white font-semibold bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent">
-                War of the Elector V 1.4
+                War of the Elector V 1.4&nbsp;
               </span>
               is out now. I built this with my favorite tech stack,{" "}
               <span className="text-white/95 font-medium">Next/Tailwind</span>{" "}
