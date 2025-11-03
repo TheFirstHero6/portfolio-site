@@ -8,7 +8,7 @@ export default function TechShowcase() {
   const technologies = [
     {
       category: "Frontend",
-      items: ["React 19", "Next.js 15", "TypeScript", "Tailwind CSS v4"],
+      items: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
       gradient: "from-blue-500/20 to-cyan-500/20",
     },
     {
@@ -63,7 +63,10 @@ export default function TechShowcase() {
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: index * 0.1 + i * 0.05 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: index * 0.1 + i * 0.05,
+                        }}
                         className="flex items-center gap-2"
                       >
                         <div className="w-1.5 h-1.5 rounded-full bg-white/60" />

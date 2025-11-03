@@ -39,7 +39,7 @@ export default function Features() {
                 cutting-edge applications that stand the test of time.
               </p>
               <div className="flex flex-wrap gap-2">
-                {["React 19", "Next.js 15", "TypeScript", "Tailwind v4"].map(
+                {["React", "Next.js", "TypeScript", "Tailwind CSS"].map(
                   (tech) => (
                     <span
                       key={tech}
@@ -58,9 +58,7 @@ export default function Features() {
           <div className="glass-medium glass-border rounded-xl p-3 w-fit mb-4">
             <Target className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-heading-md text-white mb-3">
-            Goal-Oriented
-          </h3>
+          <h3 className="text-heading-md text-white mb-3">Goal-Oriented</h3>
           <p className="text-body text-white/85 leading-relaxed">
             Focused on delivering results that align with your business
             objectives and user needs.
@@ -71,9 +69,7 @@ export default function Features() {
           <div className="glass-medium glass-border rounded-xl p-3 w-fit mb-4">
             <Users className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-heading-md text-white mb-3">
-            User-Centric
-          </h3>
+          <h3 className="text-heading-md text-white mb-3">User-Centric</h3>
           <p className="text-body text-white/85 leading-relaxed">
             Designing experiences that delight users and drive engagement
             through thoughtful UX.
