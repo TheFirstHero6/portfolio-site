@@ -65,7 +65,7 @@ export default function About() {
             <p className="text-body-lg text-white/85 leading-relaxed">
               Hi, I'm Klaus! I'm a full-stack developer who specializes in{" "}
               <span className="text-white font-semibold bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent">
-                React/Next.js
+                React/Next.js&nbsp;
               </span>
               .with a focus on modern, high-performing frontends (like this
               one!).
