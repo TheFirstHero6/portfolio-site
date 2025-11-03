@@ -82,7 +82,7 @@ export default function About() {
                 Prisma/PostgreSQL
               </span>
               . Aside from my React specialty, I'm something of a JS framework
-              generalist, and I like to build in{" "}
+              generalist. I like to build in{" "}
               <span className="text-white/95 font-medium">Vue.js</span> and
               adore{" "}
               <span className="text-white font-semibold bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">
