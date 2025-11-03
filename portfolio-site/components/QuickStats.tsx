@@ -64,11 +64,17 @@ export default function QuickStats() {
                 </div>
               </div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                <AnimatedCounter
-                  value={stat.value}
-                  suffix={stat.suffix}
-                  className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent"
-                />
+                {stat.label === "GPA" ? (
+                  <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+                    4.0
+                  </span>
+                ) : (
+                  <AnimatedCounter
+                    value={stat.value}
+                    suffix={stat.suffix}
+                    className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent"
+                  />
+                )}
               </div>
               <div className="text-sm text-white/75 font-medium">
                 {stat.label}
