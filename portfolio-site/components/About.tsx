@@ -63,24 +63,28 @@ export default function About() {
             className="space-y-4"
           >
             <p className="text-body-lg text-white/85 leading-relaxed">
-              Hi, I'm Klaus! I'm a developer who specializes in{" "}
+              Hi, I'm Klaus! I'm a full-stack developer who specializes in{" "}
               <span className="text-white font-semibold bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent">
                 React/Next.js
               </span>
-              . I am a full-stack developer with a focus on modern, high-performing
-              frontends (like this one!).
+              .with a focus on modern, high-performing frontends (like this
+              one!).
             </p>
             <p className="text-body-lg text-white/85 leading-relaxed">
-              At the time of writing, out now is my RTS game{" "}
+              At the time of writing, RTS game{" "}
               <span className="text-white font-semibold bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent">
-                War of the Elector
+                War of the Elector V 1.4
               </span>
-              , version 1.1 of which is out now. I built this with my favorite tech
-              stack,{" "}
-              <span className="text-white/95 font-medium">Next/Tailwind</span> and{" "}
-              <span className="text-white/95 font-medium">Prisma/PostgreSQL</span>. Aside from my React
-              specialty, I'm something of a JS framework generalist, and I like to
-              build in <span className="text-white/95 font-medium">Vue.js</span> and adore{" "}
+              is out now. I built this with my favorite tech stack,{" "}
+              <span className="text-white/95 font-medium">Next/Tailwind</span>{" "}
+              and{" "}
+              <span className="text-white/95 font-medium">
+                Prisma/PostgreSQL
+              </span>
+              . Aside from my React specialty, I'm something of a JS framework
+              generalist, and I like to build in{" "}
+              <span className="text-white/95 font-medium">Vue.js</span> and
+              adore{" "}
               <span className="text-white font-semibold bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">
                 Svelte
               </span>{" "}
@@ -88,10 +92,10 @@ export default function About() {
             </p>
             <p className="text-body-lg text-white/85 leading-relaxed">
               I also have a strong interest/background in{" "}
-              <span className="text-white/95 font-medium">QA and testing</span>. Having
-              built my own full-stack projects, I'm passionate about software
-              quality and end-to-end reliability, and thus put my apps through
-              notable testing to ensure a positive UX.
+              <span className="text-white/95 font-medium">QA and testing</span>.
+              Having built my own full-stack projects, I'm passionate about
+              software quality and end-to-end reliability, and thus put my apps
+              through notable testing to ensure a positive UX.
             </p>
             <p className="text-body-lg text-white/85 leading-relaxed">
               Have an inquiry or project you'd like to discuss? Let's connect!
