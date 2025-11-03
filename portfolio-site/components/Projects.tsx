@@ -4,26 +4,29 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { projects } from "../lib/projects";
+import ScrollReveal from "./ui/ScrollReveal";
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const featuredProjects = projects; // Only War of the Elector remains
+  const featuredProjects = projects;
 
   return (
     <div
       className="max-w-7xl mx-auto w-full px-3 sm:px-4 overflow-x-hidden"
       data-foreground
     >
-      <div className="glass glass-border noise rounded-2xl p-4 md:p-8 border border-white/10 backdrop-blur-0 hover:backdrop-blur-0">
-        <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Featured Projects
-          </h2>
-          <p className="text-white/70 text-lg mx-auto text-balance max-w-[90vw] sm:max-w-2xl px-2">
-            A showcase of my latest work, featuring innovative solutions and
-            cutting-edge technologies
-          </p>
-        </div>
+      <div className="glass-medium glass-border noise rounded-2xl p-6 md:p-10 glass-shadow">
+        <ScrollReveal direction="up">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-heading-xl text-white mb-4">
+              Featured Projects
+            </h2>
+            <p className="text-body-lg text-white/75 mx-auto text-balance max-w-[90vw] sm:max-w-2xl px-2">
+              A showcase of my latest work, featuring innovative solutions and
+              cutting-edge technologies
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Single Featured Project */}
         <div className="mb-3 md:mb-4">
@@ -49,7 +52,7 @@ export default function Projects() {
                   delay: index * 0.08,
                 }}
                 viewport={{ once: true }}
-                className="group relative overflow-hidden rounded-2xl transition-colors duration-200 will-change-transform transform-gpu bg-white/10 border border-white/10 hover:border-white/20"
+                className="group relative overflow-hidden rounded-2xl transition-all duration-300 will-change-transform transform-gpu glass glass-border hover:glass-medium glass-shadow"
               >
                 {project.image && (
                   <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-t-2xl">
@@ -77,16 +80,16 @@ export default function Projects() {
                           Featured
                         </span>
                       </div>
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 cursor-default">
+                      <h3 className="text-heading-md text-white mb-2 cursor-default">
                         {project.title}
                       </h3>
-                      <p className="text-white/70 text-sm mb-3 md:mb-4">
+                      <p className="text-white/75 text-sm md:text-base mb-3 md:mb-4">
                         {project.subtitle}
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-white/80 text-sm leading-relaxed mb-6 wrap-break-word max-w-[90vw] sm:max-w-none">
+                  <p className="text-body text-white/85 leading-relaxed mb-6 wrap-break-word max-w-[90vw] sm:max-w-none">
                     {project.description}
                   </p>
 
@@ -112,7 +115,7 @@ export default function Projects() {
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-white text-sm font-medium transition-all duration-200 hover:scale-105 w-full sm:w-auto"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl glass-medium glass-border text-white text-sm font-semibold transition-all duration-300 hover:glass-strong hover:scale-105 w-full sm:w-auto"
                       >
                         <svg
                           className="w-4 h-4"
@@ -135,7 +138,7 @@ export default function Projects() {
                         href={project.repo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 text-sm font-medium transition-all duration-200 w-full sm:w-auto"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl glass glass-border text-white/90 text-sm font-semibold transition-all duration-300 hover:glass-medium hover:scale-105 w-full sm:w-auto"
                       >
                         <svg
                           className="w-4 h-4"
@@ -149,7 +152,7 @@ export default function Projects() {
                     )}
                     <button
                       onClick={() => setSelectedProject(project.id)}
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 text-sm font-medium transition-all duration-200 w-full sm:w-auto"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl glass glass-border text-white/90 text-sm font-semibold transition-all duration-300 hover:glass-medium hover:scale-105 w-full sm:w-auto"
                     >
                       <svg
                         className="w-4 h-4"
@@ -172,8 +175,6 @@ export default function Projects() {
             ))}
           </div>
         </div>
-
-        {/* Removed list/filter when only one project is shown */}
       </div>
 
       {/* Project Detail Modal */}
@@ -190,7 +191,7 @@ export default function Projects() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6"
+              className="max-w-2xl w-full max-h-[90vh] overflow-y-auto glass-medium glass-border rounded-2xl glass-shadow p-6 md:p-8"
               onClick={(e) => e.stopPropagation()}
             >
               {(() => {
@@ -214,16 +215,16 @@ export default function Projects() {
                             </span>
                           )}
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">
+                        <h3 className="text-heading-md text-white mb-2">
                           {project.title}
                         </h3>
-                        <p className="text-white/70 text-lg">
+                        <p className="text-body-lg text-white/75">
                           {project.subtitle}
                         </p>
                       </div>
                       <button
                         onClick={() => setSelectedProject(null)}
-                        className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 transition-colors"
+                        className="p-2 rounded-xl glass glass-border text-white/90 transition-all duration-300 hover:glass-medium"
                       >
                         <svg
                           className="w-5 h-5"
@@ -241,20 +242,20 @@ export default function Projects() {
                       </button>
                     </div>
 
-                    <p className="text-white/80 text-base leading-relaxed mb-6">
+                    <p className="text-body text-white/85 leading-relaxed mb-6">
                       {project.description}
                     </p>
 
                     {project.highlights && (
                       <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-white mb-3">
+                        <h4 className="text-heading-md text-white mb-3">
                           Key Features
                         </h4>
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {project.highlights.map((highlight, index) => (
                             <li
                               key={index}
-                              className="flex items-center gap-2 text-white/80 text-sm"
+                              className="flex items-center gap-2 text-white/85 text-sm md:text-base"
                             >
                               <svg
                                 className="w-4 h-4 text-green-400 shrink-0"
@@ -275,14 +276,14 @@ export default function Projects() {
                     )}
 
                     <div className="mb-6">
-                      <h4 className="text-lg font-semibold text-white mb-3">
+                      <h4 className="text-heading-md text-white mb-3">
                         Technologies
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {project.technologies.map((tech) => (
                           <span
                             key={tech}
-                            className="px-3 py-1 rounded-full bg-white/15 text-white/80 text-sm border border-white/20"
+                            className="px-3 py-1.5 rounded-full glass glass-border text-white/90 text-sm font-medium"
                           >
                             {tech}
                           </span>
@@ -296,7 +297,7 @@ export default function Projects() {
                           href={project.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white/15 hover:bg-white/25 text-white font-medium transition-all duration-200 hover:scale-105"
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl glass-medium glass-border text-white font-semibold transition-all duration-300 hover:glass-strong hover:scale-105"
                         >
                           <svg
                             className="w-4 h-4"
@@ -319,7 +320,7 @@ export default function Projects() {
                           href={project.repo}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 font-medium transition-all duration-200"
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl glass glass-border text-white/90 font-semibold transition-all duration-300 hover:glass-medium"
                         >
                           <svg
                             className="w-4 h-4"

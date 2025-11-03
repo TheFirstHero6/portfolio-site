@@ -234,7 +234,7 @@ function StepIndicator({ step, currentStep, onClickStep, disableStepIndicators =
 function StepConnector({ isComplete }: { isComplete: boolean }) {
   const lineVariants: Variants = { incomplete: { width: 0, backgroundColor: "transparent" }, complete: { width: "100%", backgroundColor: "#5227FF" } };
   return (
-    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg白/10 bg-white/10">
+    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-white/10">
       <motion.div className="absolute left-0 top-0 h-full" variants={lineVariants} initial={false} animate={isComplete ? "complete" : "incomplete"} transition={{ duration: 0.4 }} />
     </div>
   );

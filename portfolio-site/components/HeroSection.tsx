@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, memo } from "react";
 import TypewriterText from "./TypewriterText";
-import TechStack from "./TechStack";
-import DecryptedText from "./ui/TextPressure";
 import TextPressure from "./ui/TextPressure";
+import MagneticButton from "./ui/MagneticButton";
+import ShimmerButton from "./ui/ShimmerButton";
 
 interface HeroSectionProps {
   onViewProjects: () => void;
@@ -23,7 +23,7 @@ const HeroSection = memo(function HeroSection({
 
   const typewriterTexts = [
     "It's dangerous to ship alone.",
-    "import Klaus from './developers'",
+    "import Klaus from ./developers ",
   ];
 
   // Generate particles only on client side to prevent hydration mismatch
@@ -66,64 +66,65 @@ const HeroSection = memo(function HeroSection({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.6 }}
-          className="mb-6 md:mb-12 overflow-visible"
+          className="mb-8 md:mb-16 overflow-visible"
         >
-          <h3 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4 overflow-visible">
+          <h1 className="text-display text-white mb-4 md:mb-6 overflow-visible">
             Klaus Chamberlain
-            <br />
-            <div className="flex justify-center">
-              <span className="inline-block mx-auto w-fit leading-none overflow-visible tracking-[0.2em] md:tracking-[0.5em] max-w-[92vw] sm:max-w-none sm:whitespace-pre">
-                <TextPressure
-                  text="Full Stack Developer"
-                  flex={false}
-                  alpha={false}
-                  stroke={false}
-                  width={false}
-                  weight={true}
-                  italic={false}
-                  textColor="#ffffff"
-                  strokeColor="#ff0000"
-                  minFontSize={36}
-                />
-              </span>
-            </div>
-          </h3>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 text-sm md:text-xl text-white/80">
-            <span className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+          </h1>
+          <div className="flex justify-center mb-6 md:mb-8">
+            <span className="inline-block mx-auto w-fit leading-none overflow-visible tracking-[0.2em] md:tracking-[0.5em] max-w-[92vw] sm:max-w-none sm:whitespace-pre">
+              <TextPressure
+                text="Full Stack Developer"
+                flex={false}
+                alpha={false}
+                stroke={false}
+                width={false}
+                weight={true}
+                italic={false}
+                textColor="#ffffff"
+                strokeColor="#ff0000"
+                minFontSize={36}
+              />
+            </span>
+          </div>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
+            <span className="glass glass-border px-4 py-2.5 md:px-5 md:py-3 rounded-xl text-sm md:text-base text-white/90 font-medium transition-all duration-300 hover:glass-medium hover:scale-105">
               Next.js Developer
             </span>
-            <span className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+            <span className="glass glass-border px-4 py-2.5 md:px-5 md:py-3 rounded-xl text-sm md:text-base text-white/90 font-medium transition-all duration-300 hover:glass-medium hover:scale-105">
               React Specialist
             </span>
-            <span className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+            <span className="glass glass-border px-4 py-2.5 md:px-5 md:py-3 rounded-xl text-sm md:text-base text-white/90 font-medium transition-all duration-300 hover:glass-medium hover:scale-105">
               Skilled in TypeScript
             </span>
           </div>
         </motion.div>
 
-        {/* CTA Dock (glass) */}
+        {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.6, duration: 0.5 }}
-          className="flex items-center justify-center"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <div className="glass glass-border rounded-2xl px-2 py-1 shadow-lg">
-            <div className="flex items-center gap-1">
-              <button
-                onClick={onViewProjects}
-                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white hover:bg-white/15 active:scale-[0.98] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-sm hover:shadow-lg hover:translate-y-px cursor-pointer"
-              >
-                View My Projects
-              </button>
-              <button
-                onClick={onContactClick}
-                className="glass glass-border rounded-xl px-4 md:px-5 py-2 text-white/90 hover:text-white hover:bg-white/15 active:scale-[0.98] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-sm hover:shadow-lg hover:translate-y-px cursor-pointer"
-              >
-                Contact
-              </button>
-            </div>
-          </div>
+          <ShimmerButton
+            onClick={onViewProjects}
+            className="relative glass-medium glass-border rounded-xl px-8 py-3.5 text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 glass-shadow"
+          >
+            <span className="relative z-10">View My Projects</span>
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-brand-purple/20 to-brand-blue/20"
+              initial={{ opacity: 0 }}
+              whileHover={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            />
+          </ShimmerButton>
+          <ShimmerButton
+            onClick={onContactClick}
+            className="relative glass glass-border rounded-xl px-8 py-3.5 text-white/90 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+          >
+            <span className="relative z-10">Get in Touch</span>
+          </ShimmerButton>
         </motion.div>
         {/* TechStack moved out of flow to avoid affecting centering */}
         {/* Scroll indicator */}

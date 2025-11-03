@@ -19,7 +19,7 @@ export const projects: Project[] = [
     title: "War of the Elector",
     subtitle: "Strategy experience site",
     description:
-      "The official website for 'War of the Elector,' a grand Real-Time-Strategy game set in a richly detailed fantasy world. This site features complex state management, modern responsive UI/UX, and more!.",
+      "The official website for 'War of the Elector,' a grand Real-Time-Strategy game set in a richly detailed fantasy world. This site features complex state management, modern responsive UI/UX, and more!",
     technologies: [
       "Next.js",
       "TypeScript",

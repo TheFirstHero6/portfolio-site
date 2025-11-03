@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, extend, useFrame } from "@react-three/fiber";
 import { useGLTF, useTexture, Environment, Lightformer } from "@react-three/drei";
 import {
@@ -16,13 +16,9 @@ import {
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
 
-// replace with your own imports, see the usage snippet for details
-// Use public assets to avoid bundler config for .glb/.png imports
+// Use public assets - Next.js serves these from /public folder
 const CARD_GLB_URL = "/lanyard/card.glb";
 const LANYARD_TEX_URL = "/lanyard/lanyard.png";
-const LOGO_URL = "/lanyard/logo.png";
-const FALLBACK_TEX_DATA =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottQAAAABJRU5ErkJggg==";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -39,52 +35,18 @@ export default function Lanyard({
   fov = 20,
   transparent = true,
 }: LanyardProps) {
-  const [hasModel, setHasModel] = useState(false);
-  const [textureUrl, setTextureUrl] = useState<string>(FALLBACK_TEX_DATA);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const hasTexture = textureUrl !== FALLBACK_TEX_DATA;
-
-  useEffect(() => {
-    let cancelled = false;
-    const check = async () => {
-      try {
-        const [glbRes, texRes, logoRes] = await Promise.allSettled([
-          fetch(CARD_GLB_URL, { method: "HEAD" }),
-          fetch(LANYARD_TEX_URL, { method: "HEAD" }),
-          fetch(LOGO_URL, { method: "HEAD" }),
-        ]);
-        if (!cancelled) {
-          if (glbRes.status === "fulfilled" && glbRes.value.ok) {
-            setHasModel(true);
-          }
-          if (texRes.status === "fulfilled" && texRes.value.ok) {
-            setTextureUrl(LANYARD_TEX_URL);
-          }
-          if (logoRes.status === "fulfilled" && logoRes.value.ok) {
-            setLogoUrl(LOGO_URL);
-          }
-        }
-      } catch {
-        // use fallbacks
-      }
-    };
-    check();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   return (
-    <div className="relative z-0 w-full h-full flex justify-center items-center transform scale-100 origin-center">
+    <div className="absolute inset-0 w-full h-full">
       <Canvas
         camera={{ position, fov }}
         gl={{ alpha: transparent }}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
       >
-        <ambientLight intensity={Math.PI} />
-        <Physics gravity={gravity} timeStep={1 / 60}>
-          <Band textureUrl={textureUrl} hasTexture={hasTexture} hasModel={hasModel} logoUrl={logoUrl} />
-        </Physics>
+        <Suspense fallback={null}>
+          <ambientLight intensity={Math.PI} />
+          <Physics gravity={gravity} timeStep={1 / 60}>
+            <Band />
+          </Physics>
         <Environment blur={0.75}>
           <Lightformer
             intensity={2}
@@ -115,6 +77,7 @@ export default function Lanyard({
             scale={[100, 10, 1]}
           />
         </Environment>
+        </Suspense>
       </Canvas>
     </div>
   );
@@ -123,14 +86,9 @@ export default function Lanyard({
 interface BandProps {
   maxSpeed?: number;
   minSpeed?: number;
-  textureUrl: string;
-  hasTexture: boolean;
-  hasModel: boolean;
-  logoUrl: string | null;
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, textureUrl, hasTexture, hasModel, logoUrl }: BandProps) {
-  // Using "any" for refs since the exact types depend on Rapier's internals
+function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
   const band = useRef<any>(null);
   const fixed = useRef<any>(null);
   const j1 = useRef<any>(null);
@@ -151,7 +109,8 @@ function Band({ maxSpeed = 50, minSpeed = 0, textureUrl, hasTexture, hasModel, l
     linearDamping: 4,
   };
 
-  const texture = useTexture(textureUrl);
+  const { nodes, materials } = useGLTF(CARD_GLB_URL) as any;
+  const texture = useTexture(LANYARD_TEX_URL);
   const [curve] = useState(
     () =>
       new THREE.CatmullRomCurve3([
@@ -272,11 +231,22 @@ function Band({ maxSpeed = 50, minSpeed = 0, textureUrl, hasTexture, hasModel, l
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())));
             }}
           >
-            {hasModel ? <CardModel logoUrl={logoUrl} /> : <PlaceholderCard />}
+            <mesh geometry={nodes.card.geometry}>
+              <meshPhysicalMaterial
+                map={materials.base.map}
+                map-anisotropy={16}
+                clearcoat={1}
+                clearcoatRoughness={0.15}
+                roughness={0.9}
+                metalness={0.8}
+              />
+            </mesh>
+            <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
+            <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
           </group>
         </RigidBody>
       </group>
-      <mesh ref={band}>
+      <mesh ref={band} raycast={undefined}>
         {/* @ts-ignore - meshline JSX intrinsic provided via extend at runtime */}
         <meshLineGeometry />
         {/* @ts-ignore - meshline JSX intrinsic provided via extend at runtime */}
@@ -284,8 +254,8 @@ function Band({ maxSpeed = 50, minSpeed = 0, textureUrl, hasTexture, hasModel, l
           color="white"
           depthTest={false}
           resolution={isSmall ? [1000, 2000] : [1000, 1000]}
-          useMap={hasTexture}
-          map={hasTexture ? texture : undefined}
+          useMap
+          map={texture}
           repeat={[-4, 1]}
           lineWidth={1}
         />
@@ -293,47 +263,3 @@ function Band({ maxSpeed = 50, minSpeed = 0, textureUrl, hasTexture, hasModel, l
     </>
   );
 }
-
-function CardModel({ logoUrl }: { logoUrl: string | null }) {
-  const { nodes, materials } = useGLTF(CARD_GLB_URL) as any;
-  const logoTex = logoUrl ? useTexture(logoUrl) : null;
-  return (
-    <>
-      <mesh geometry={nodes.card.geometry}>
-        <meshPhysicalMaterial
-          map={materials.base.map}
-          map-anisotropy={16}
-          clearcoat={1}
-          clearcoatRoughness={0.15}
-          roughness={0.9}
-          metalness={0.8}
-        />
-      </mesh>
-      {logoTex ? (
-        <mesh position={[0, -0.05, 0.035]}>
-          <planeGeometry args={[1.2, 1.2]} />
-          <meshBasicMaterial map={logoTex} transparent />
-        </mesh>
-      ) : null}
-      <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
-      <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
-    </>
-  );
-}
-
-function PlaceholderCard() {
-  return (
-    <group>
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1.6, 2.2, 0.06]} />
-        <meshPhysicalMaterial color={0xffffff} roughness={0.9} metalness={0.2} transparent opacity={0.9} />
-      </mesh>
-      <mesh position={[0, 1.3, 0]}>
-        <boxGeometry args={[0.9, 0.15, 0.1]} />
-        <meshStandardMaterial color={0xb0b0b0} metalness={0.8} roughness={0.3} />
-      </mesh>
-    </group>
-  );
-}
-
-

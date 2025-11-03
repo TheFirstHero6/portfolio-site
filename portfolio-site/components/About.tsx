@@ -1,12 +1,42 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Lanyard from "./Lanyard";
+import dynamic from "next/dynamic";
+import { Sparkles, Code2, Zap } from "lucide-react";
+import GlowingCard from "./ui/GlowingCard";
+
+// Dynamically import Lanyard to avoid SSR issues with Three.js
+const Lanyard = dynamic(() => import("./Lanyard"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-white/5 rounded-t-2xl">
+      <div className="animate-pulse text-white/50">Loading...</div>
+    </div>
+  ),
+});
 
 export default function About() {
+  const highlights = [
+    {
+      icon: Code2,
+      title: "React Specialist",
+      description: "Expert in modern React patterns and Next.js",
+    },
+    {
+      icon: Zap,
+      title: "Performance-Focused",
+      description: "Building lightning-fast, optimized applications",
+    },
+    {
+      icon: Sparkles,
+      title: "Quality Driven",
+      description: "Passionate about testing and reliability",
+    },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
         {/* Left: Text */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -15,41 +45,93 @@ export default function About() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="order-2 lg:order-1"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <motion.h2
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-heading-xl mb-6 bg-gradient-to-r from-white via-brand-purple to-brand-blue bg-clip-text text-transparent"
+          >
             About Me
-          </h2>
-          <p className="text-white/80 leading-relaxed text-base md:text-lg">
-            Hi, I'm Klaus! I'm a developer who specializes in React/Next.js. I
-            am a full-stack developer with a focus on modern, high-performing
-            frontends (like this one!).
-          </p>
-          <div className="h-3" />
-          <p className="text-white/80 leading-relaxed text-base md:text-lg">
-            At the time of writing, out now is my RTS game{" "}
-            <span className="text-white font-medium">War of the Elector</span>,
-            version 1.1 of which is out now. I built this with my favorite tech
-            stack, Next/Tailwind and Prisma/PostgreSQL. Aside from my React
-            specialty, I'm something of a JS framework generalist, and I like to
-            build in Vue.js and adore Svelte whenever I get to use it.{" "}
-          </p>
-          <div className="h-3" />
-          <p className="text-white/80 leading-relaxed text-base md:text-lg">
-            I also have a strong interest/background in QA and testing. Having
-            built my own full-stack projects, I'm passionate about software
-            quality and end-to-end reliability, and thus put my apps through
-            notable testing to ensure a positive UX.
-          </p>
-          <div className="h-3" />
-          <p className="text-white/80 leading-relaxed text-base md:text-lg">
-            Have an inquiry or project you'd like to discuss? Let's connect!
-            Feel free to reach through the contact form below!
-          </p>
+          </motion.h2>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-4"
+          >
+            <p className="text-body-lg text-white/85 leading-relaxed">
+              Hi, I'm Klaus! I'm a developer who specializes in{" "}
+              <span className="text-white font-semibold bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent">
+                React/Next.js
+              </span>
+              . I am a full-stack developer with a focus on modern, high-performing
+              frontends (like this one!).
+            </p>
+            <p className="text-body-lg text-white/85 leading-relaxed">
+              At the time of writing, out now is my RTS game{" "}
+              <span className="text-white font-semibold bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent">
+                War of the Elector
+              </span>
+              , version 1.1 of which is out now. I built this with my favorite tech
+              stack,{" "}
+              <span className="text-white/95 font-medium">Next/Tailwind</span> and{" "}
+              <span className="text-white/95 font-medium">Prisma/PostgreSQL</span>. Aside from my React
+              specialty, I'm something of a JS framework generalist, and I like to
+              build in <span className="text-white/95 font-medium">Vue.js</span> and adore{" "}
+              <span className="text-white font-semibold bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">
+                Svelte
+              </span>{" "}
+              whenever I get to use it.
+            </p>
+            <p className="text-body-lg text-white/85 leading-relaxed">
+              I also have a strong interest/background in{" "}
+              <span className="text-white/95 font-medium">QA and testing</span>. Having
+              built my own full-stack projects, I'm passionate about software
+              quality and end-to-end reliability, and thus put my apps through
+              notable testing to ensure a positive UX.
+            </p>
+            <p className="text-body-lg text-white/85 leading-relaxed">
+              Have an inquiry or project you'd like to discuss? Let's connect!
+              Feel free to reach through the contact form below!
+            </p>
+          </motion.div>
+
+          {/* Highlights */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {highlights.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+                  whileHover={{ y: -4 }}
+                  className="glass glass-border rounded-xl p-4 text-center group transition-all duration-300 hover:glass-medium"
+                >
+                  <div className="glass-medium glass-border rounded-lg p-2 w-fit mx-auto mb-2 group-hover:glass-strong transition-all duration-300">
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="text-sm font-semibold text-white mb-1">
+                    {item.title}
+                  </div>
+                  <div className="text-xs text-white/70">
+                    {item.description}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+            transition={{ duration: 0.4, ease: "easeOut", delay: 0.6 }}
             className="mt-6 flex flex-wrap items-center gap-3"
           >
             <a
@@ -60,7 +142,7 @@ export default function About() {
                 if (el)
                   el.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
-              className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/85 border border-white/20 transition-transform will-change-transform hover:scale-[1.03]"
+              className="glass glass-border px-6 py-3 rounded-xl text-white/90 font-medium transition-all duration-300 hover:glass-medium hover:scale-105"
             >
               View projects
             </a>
@@ -72,7 +154,7 @@ export default function About() {
                 if (el)
                   el.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
-              className="px-5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white border border-white/20 transition-transform will-change-transform hover:scale-[1.03]"
+              className="glass-medium glass-border px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 hover:glass-strong hover:scale-105"
             >
               Let's connect
             </a>
@@ -87,11 +169,21 @@ export default function About() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="order-1 lg:order-2"
         >
-          <div className="glass glass-border rounded-2xl overflow-hidden border border-white/15 shadow-2xl">
-            <div className="relative aspect-[4/3]">
+          <GlowingCard className="glass-medium glass-border rounded-2xl overflow-hidden glass-shadow relative group">
+            <div className="relative aspect-[4/3] w-full h-full">
               <Lanyard position={[0, 0, 14]} gravity={[0, -40, 0]} />
             </div>
-          </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+            <motion.div
+              className="absolute top-4 right-4 glass glass-border rounded-full p-2"
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.8, type: "spring" }}
+            >
+              <Sparkles className="w-4 h-4 text-brand-purple" />
+            </motion.div>
+          </GlowingCard>
         </motion.div>
       </div>
     </div>
