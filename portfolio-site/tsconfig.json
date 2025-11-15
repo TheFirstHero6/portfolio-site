@@ -1,4 +1,8 @@
 {
+  "exclude": [
+    "Redesign Portfolio Website UI (1)",
+    "node_modules"
+  ],
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
