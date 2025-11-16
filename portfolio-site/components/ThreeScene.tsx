@@ -6,41 +6,94 @@ import { NavigationHUD } from './NavigationHUD';
 import { ContentOverlay } from './ContentOverlay';
 import { InteractionPrompt } from './InteractionPrompt';
 
-// Helper to create text sprite for planet labels
-const createTextSprite = (text: string, color: string): THREE.Sprite => {
+// Helper to create a sign with post and board for planet labels
+const createSignSprite = (text: string, color: string): THREE.Sprite => {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d')!;
+  // Canvas for sign with post
   canvas.width = 512;
-  canvas.height = 128;
+  canvas.height = 512;
   
-  // Draw background with border
-  context.fillStyle = 'rgba(0, 0, 0, 0.9)';
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  // Clear canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw post (vertical pole in center bottom)
+  const postWidth = 20;
+  const postHeight = 180;
+  const postX = canvas.width / 2 - postWidth / 2;
+  const postY = canvas.height - postHeight;
+  
+  // Post shadow
+  context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  context.fillRect(postX + 3, postY + 3, postWidth, postHeight);
+  
+  // Post (wood-like color with gradient)
+  const postGradient = context.createLinearGradient(postX, postY, postX + postWidth, postY);
+  postGradient.addColorStop(0, '#8B4513');
+  postGradient.addColorStop(0.5, '#A0522D');
+  postGradient.addColorStop(1, '#8B4513');
+  context.fillStyle = postGradient;
+  context.fillRect(postX, postY, postWidth, postHeight);
+  
+  // Post highlight
+  context.fillStyle = 'rgba(255, 255, 255, 0.2)';
+  context.fillRect(postX, postY, postWidth / 2, postHeight);
+  
+  // Sign board (horizontal rectangle above post)
+  const boardWidth = 320;
+  const boardHeight = 120;
+  const boardX = canvas.width / 2 - boardWidth / 2;
+  const boardY = postY - boardHeight - 10;
+  
+  // Board shadow
+  context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  context.fillRect(boardX + 4, boardY + 4, boardWidth, boardHeight);
+  
+  // Board background (dark with border)
+  context.fillStyle = 'rgba(20, 20, 30, 0.95)';
+  context.fillRect(boardX, boardY, boardWidth, boardHeight);
+  
+  // Board border (glowing)
   context.strokeStyle = color;
-  context.lineWidth = 4;
-  context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+  context.lineWidth = 6;
+  context.shadowColor = color;
+  context.shadowBlur = 15;
+  context.strokeRect(boardX + 3, boardY + 3, boardWidth - 6, boardHeight - 6);
   
-  // Draw text with better visibility
+  // Reset shadow for text
+  context.shadowColor = 'transparent';
+  context.shadowBlur = 0;
+  
+  // Draw text on sign board
   context.fillStyle = color;
-  context.font = 'bold 48px Arial';
+  context.font = 'bold 64px Arial';
   context.textAlign = 'center';
   context.textBaseline = 'middle';
-  // Add text shadow for better visibility
-  context.shadowColor = 'rgba(0, 0, 0, 0.8)';
-  context.shadowBlur = 8;
-  context.shadowOffsetX = 2;
-  context.shadowOffsetY = 2;
-  context.fillText(text, canvas.width / 2, canvas.height / 2);
+  
+  // Text glow
+  context.shadowColor = color;
+  context.shadowBlur = 20;
+  context.shadowOffsetX = 0;
+  context.shadowOffsetY = 0;
+  context.fillText(text, canvas.width / 2, boardY + boardHeight / 2);
+  
+  // Text again for crispness
+  context.shadowColor = 'transparent';
+  context.shadowBlur = 0;
+  context.fillText(text, canvas.width / 2, boardY + boardHeight / 2);
   
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
   const spriteMaterial = new THREE.SpriteMaterial({ 
     map: texture,
     transparent: true,
-    alphaTest: 0.1,
+    alphaTest: 0.05,
+    depthTest: false, // Always render on top
+    depthWrite: false,
   });
   const sprite = new THREE.Sprite(spriteMaterial);
-  sprite.scale.set(50, 12, 1); // Larger for better visibility
+  // Scale for sign visibility
+  sprite.scale.set(60, 60, 1);
   return sprite;
 };
 
@@ -55,6 +108,7 @@ export function ThreeScene() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoveredSection, setHoveredSection] = useState<Section | null>(null);
   const [navigationMode, setNavigationMode] = useState<NavigationMode>('default');
+  const isModeTransitioningRef = useRef(false);
   const sceneRef = useRef<any>(null);
   const [showPrompt, setShowPrompt] = useState(true);
   const [cameraVelocity] = useState(new THREE.Vector3());
@@ -125,8 +179,10 @@ export function ThreeScene() {
             
             // Animate label - always show when planet is visible
             if (label) {
-              label.scale.setScalar(newScale * 0.25);
-              label.visible = newScale > 0.2; // Show label earlier
+              // Use a fixed scale for labels so they're always readable
+              const labelScale = 1.0; // Fixed scale for consistent visibility
+              label.scale.setScalar(labelScale);
+              label.visible = true; // Always visible when in exploration mode
             }
             
             // Enable interaction only when fully visible
@@ -139,7 +195,8 @@ export function ThreeScene() {
               if (glow) glow.scale.setScalar(targetScale * 1.4);
               planet.visible = true;
               if (label) {
-                label.scale.setScalar(targetScale * 0.25);
+                // Keep labels at fixed scale for maximum visibility
+                label.scale.setScalar(1.0);
                 label.visible = true; // Always visible in exploration mode
               }
             }
@@ -179,7 +236,7 @@ export function ThreeScene() {
     
     // Update camera position for exploration mode with smooth transition
     if (navigationMode === 'exploration' && sceneRef.current.explorationCamera) {
-      const center = new THREE.Vector3(0, 0, -100);
+      const center = new THREE.Vector3(0, 0, 0); // Center is now at origin
       const expCam = sceneRef.current.explorationCamera;
       
       // Reset to optimal viewing position when entering exploration mode
@@ -188,7 +245,7 @@ export function ThreeScene() {
         const currentPos = sceneRef.current.camera.position.clone();
         expCam.theta = Math.PI / 4; // 45 degrees for diagonal view
         expCam.phi = Math.PI / 2.5; // Slightly above horizontal
-        expCam.radius = 180; // Optimal distance to see all planets
+        expCam.radius = 200; // Optimal distance to see all planets and center cone
         expCam.initialized = true;
       }
       
@@ -221,7 +278,7 @@ export function ThreeScene() {
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000510, 0.012);
+    scene.fog = new THREE.FogExp2(0x000510, 0.006); // Slight fog for depth
 
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -287,7 +344,7 @@ export function ThreeScene() {
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 
-    // Section data with fixed positions in 3D space
+    // Section data - positions will be set near planets after planet positions are calculated
     const sectionData: { [key in Section]: { 
       position: THREE.Vector3; 
       group: THREE.Group;
@@ -303,28 +360,28 @@ export function ThreeScene() {
         color: 0x3b82f6
       },
       about: { 
-        position: new THREE.Vector3(-100, 30, -150), 
+        position: new THREE.Vector3(0, 0, 0), // Will be updated to near planet
         group: new THREE.Group(),
         meshes: [],
         interactiveMeshes: [],
         color: 0xa855f7
       },
       projects: { 
-        position: new THREE.Vector3(120, -40, -180), 
+        position: new THREE.Vector3(0, 0, 0), // Will be updated to near planet
         group: new THREE.Group(),
         meshes: [],
         interactiveMeshes: [],
         color: 0x6366f1
       },
       skills: { 
-        position: new THREE.Vector3(-130, -70, -320), 
+        position: new THREE.Vector3(0, 0, 0), // Will be updated to near planet
         group: new THREE.Group(),
         meshes: [],
         interactiveMeshes: [],
         color: 0x8b5cf6
       },
       contact: { 
-        position: new THREE.Vector3(140, 60, -350), 
+        position: new THREE.Vector3(0, 0, 0), // Will be updated to near planet
         group: new THREE.Group(),
         meshes: [],
         interactiveMeshes: [],
@@ -332,7 +389,7 @@ export function ThreeScene() {
       },
     };
 
-    // HERO SECTION - Central spiral
+    // HERO SECTION - Central spiral (restored original design)
     const heroGroup = sectionData.hero.group;
     heroGroup.position.copy(sectionData.hero.position);
     
@@ -342,23 +399,40 @@ export function ThreeScene() {
         color: new THREE.Color().setHSL(0.58 + i * 0.02, 0.8, 0.5),
         wireframe: true,
         transparent: true,
-        opacity: 0.4,
+        opacity: 0.6, // Increased opacity for better visibility
       });
       const torus = new THREE.Mesh(geometry, material);
       torus.rotation.x = Math.PI / 2;
       torus.position.y = i * 2;
-      torus.userData = { section: 'hero', originalOpacity: 0.4 };
+      torus.userData = { section: 'hero', originalOpacity: 0.6 };
       heroGroup.add(torus);
       sectionData.hero.meshes.push(torus);
       if (i % 3 === 0) {
         sectionData.hero.interactiveMeshes.push(torus);
       }
     }
+    
+    // Add invisible collision spheres around hero spiral for easier clicking
+    // Create larger invisible spheres that are easier to click
+    for (let i = 0; i < 5; i++) {
+      const collisionGeometry = new THREE.SphereGeometry(25 + i * 5, 16, 16);
+      const collisionMaterial = new THREE.MeshBasicMaterial({
+        visible: false, // Invisible but clickable
+        transparent: true,
+        opacity: 0,
+      });
+      const collisionSphere = new THREE.Mesh(collisionGeometry, collisionMaterial);
+      collisionSphere.position.y = i * 6 - 12;
+      collisionSphere.userData = { section: 'hero', isCollision: true };
+      heroGroup.add(collisionSphere);
+      sectionData.hero.interactiveMeshes.push(collisionSphere);
+    }
+    
     scene.add(heroGroup);
 
-    // ABOUT SECTION - Geometric constellation
+    // ABOUT SECTION - Geometric constellation (position will be set near planet)
     const aboutGroup = sectionData.about.group;
-    aboutGroup.position.copy(sectionData.about.position);
+    // Position will be updated after planets are positioned
     
     const aboutShapes = [
       { geometry: new THREE.IcosahedronGeometry(12, 0), scale: 1 },
@@ -388,9 +462,9 @@ export function ThreeScene() {
     });
     scene.add(aboutGroup);
 
-    // PROJECTS SECTION - Grid of cubes with depth
+    // PROJECTS SECTION - Grid of cubes with depth (position will be set near planet)
     const projectsGroup = sectionData.projects.group;
-    projectsGroup.position.copy(sectionData.projects.position);
+    // Position will be updated after planets are positioned
     
     for (let i = 0; i < 12; i++) {
       const geometry = new THREE.BoxGeometry(8, 8, 8);
@@ -415,9 +489,9 @@ export function ThreeScene() {
     }
     scene.add(projectsGroup);
 
-    // SKILLS SECTION - Spiral galaxy
+    // SKILLS SECTION - Spiral galaxy (position will be set near planet)
     const skillsGroup = sectionData.skills.group;
-    skillsGroup.position.copy(sectionData.skills.position);
+    // Position will be updated after planets are positioned
     
     for (let i = 0; i < 30; i++) {
       const geometry = new THREE.SphereGeometry(2.5, 16, 16);
@@ -444,9 +518,9 @@ export function ThreeScene() {
     }
     scene.add(skillsGroup);
 
-    // CONTACT SECTION - Ring structure with satellites
+    // CONTACT SECTION - Ring structure with satellites (position will be set near planet)
     const contactGroup = sectionData.contact.group;
-    contactGroup.position.copy(sectionData.contact.position);
+    // Position will be updated after planets are positioned
     
     const ringGeometry = new THREE.TorusGeometry(20, 3, 16, 100);
     const ringMaterial = new THREE.MeshBasicMaterial({
@@ -515,17 +589,29 @@ export function ThreeScene() {
     ];
     paths.forEach(path => scene.add(path));
 
-    // Add ambient light points at each section
+    // Add ambient light points at each section with enhanced glow
     Object.values(sectionData).forEach(data => {
-      const lightGeometry = new THREE.SphereGeometry(1, 8, 8);
+      // Main light point
+      const lightGeometry = new THREE.SphereGeometry(2, 16, 16);
       const lightMaterial = new THREE.MeshBasicMaterial({
         color: data.color,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.8,
       });
       const lightSphere = new THREE.Mesh(lightGeometry, lightMaterial);
       lightSphere.position.copy(data.position);
       scene.add(lightSphere);
+      
+      // Glow effect around light
+      const glowGeometry = new THREE.SphereGeometry(4, 16, 16);
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        color: data.color,
+        transparent: true,
+        opacity: 0.3,
+      });
+      const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+      glowSphere.position.copy(data.position);
+      scene.add(glowSphere);
     });
 
     // Create planet meshes for exploration mode
@@ -540,38 +626,46 @@ export function ThreeScene() {
       contact: 'Contact',
     };
     
-    // Arrange planets in a circular orbit around center
-    // Hero in center (where the spiral is), others orbit around it
-    const orbitRadius = 100; // Distance from center for orbiting planets
+    // Arrange planets in a circular orbit around the center
+    // Hero (Home) is the center spiral (not a planet), others orbit around it
+    const orbitRadius = 120; // Distance from center for orbiting planets
+    const orbitHeight = 0; // Keep planets at same height as center
     const orbitingSections: Section[] = ['about', 'projects', 'skills', 'contact'];
     const planetPositions: { [key in Section]: THREE.Vector3 } = {
-      hero: new THREE.Vector3(0, 0, -100), // Center (home) - where the spiral is
-      about: new THREE.Vector3(0, 0, -100), // Will be updated below
-      projects: new THREE.Vector3(0, 0, -100), // Will be updated below
-      skills: new THREE.Vector3(0, 0, -100), // Will be updated below
-      contact: new THREE.Vector3(0, 0, -100), // Will be updated below
+      hero: new THREE.Vector3(0, 0, 0), // Center (home) - where the spiral is (not a planet)
+      about: new THREE.Vector3(0, 0, 0), // Will be updated below
+      projects: new THREE.Vector3(0, 0, 0), // Will be updated below
+      skills: new THREE.Vector3(0, 0, 0), // Will be updated below
+      contact: new THREE.Vector3(0, 0, 0), // Will be updated below
     };
     
-    // Position orbiting planets evenly around the circle
+    // Position orbiting planets evenly around the circle in a horizontal plane
     orbitingSections.forEach((section, index) => {
       const angle = (index / orbitingSections.length) * Math.PI * 2 - Math.PI / 2; // Start at top
-      planetPositions[section] = new THREE.Vector3(
+      const planetPos = new THREE.Vector3(
         orbitRadius * Math.cos(angle),
-        orbitRadius * Math.sin(angle),
-        -100
+        orbitHeight,
+        orbitRadius * Math.sin(angle)
       );
+      planetPositions[section] = planetPos;
+      
+      // Update section position to be near its planet (slightly offset for visual interest)
+      sectionData[section].position.copy(planetPos);
+      sectionData[section].position.y += 20; // Slightly above planet
+      sectionData[section].group.position.copy(sectionData[section].position);
     });
     
-    Object.entries(sectionData).forEach(([section, data]) => {
-      // Use exploration-specific positions for planets
-      const planetPos = planetPositions[section as Section];
+    // Create planets only for orbiting sections (NOT hero - that's the center spiral)
+    orbitingSections.forEach((section) => {
+      const data = sectionData[section];
+      const planetPos = planetPositions[section];
       
       // Larger planets for better visibility
-      const planetGeometry = new THREE.SphereGeometry(25, 32, 32);
+      const planetGeometry = new THREE.SphereGeometry(30, 32, 32); // Increased size
       const planetMaterial = new THREE.MeshBasicMaterial({
         color: data.color,
         transparent: true,
-        opacity: 0.95,
+        opacity: 1.0, // Full opacity for better visibility
         wireframe: false,
       });
       const planet = new THREE.Mesh(planetGeometry, planetMaterial);
@@ -583,11 +677,11 @@ export function ThreeScene() {
       planetMeshes.push(planet);
       
       // Add glow effect
-      const glowGeometry = new THREE.SphereGeometry(25, 32, 32);
+      const glowGeometry = new THREE.SphereGeometry(30, 32, 32); // Match planet size
       const glowMaterial = new THREE.MeshBasicMaterial({
         color: data.color,
         transparent: true,
-        opacity: 0.5,
+        opacity: 0.7, // Increased glow opacity
         side: THREE.BackSide,
       });
       const glow = new THREE.Mesh(glowGeometry, glowMaterial);
@@ -597,16 +691,18 @@ export function ThreeScene() {
       glow.scale.setScalar(0); // Start hidden
       scene.add(glow);
       
-      // Add text label for planet
-      const labelText = sectionLabels[section as Section];
-      const labelSprite = createTextSprite(labelText, `#${data.color.toString(16).padStart(6, '0')}`);
-      labelSprite.position.copy(planetPos);
-      labelSprite.position.y += 40; // Position label above planet
-      labelSprite.userData = { section, isLabel: true };
-      labelSprite.scale.setScalar(0); // Start hidden
-      labelSprite.visible = false;
-      scene.add(labelSprite);
-      planetLabels.push(labelSprite);
+      // Add sign with post for planet - always visible
+      const labelText = sectionLabels[section];
+      const signSprite = createSignSprite(labelText, `#${data.color.toString(16).padStart(6, '0')}`);
+      signSprite.position.copy(planetPos);
+      signSprite.position.y += 45; // Position sign above planet (post will extend down)
+      signSprite.userData = { section, isLabel: true };
+      signSprite.scale.setScalar(0); // Start hidden
+      signSprite.visible = false;
+      // Make sign always face camera
+      signSprite.renderOrder = 999; // Render on top
+      scene.add(signSprite);
+      planetLabels.push(signSprite);
     });
 
     // Store references
@@ -614,7 +710,7 @@ export function ThreeScene() {
     const explorationCamera = {
       theta: Math.PI / 4, // Horizontal rotation (45 degrees for better view)
       phi: Math.PI / 2.5, // Vertical rotation (slightly above horizontal for better view)
-      radius: 180, // Distance from center (optimal for viewing all planets)
+      radius: 200, // Distance from center (optimal for viewing all planets and center cone)
       isDragging: false,
       wasDragging: false, // Track if we just finished dragging
       dragStartX: 0,
@@ -732,6 +828,17 @@ export function ThreeScene() {
           foundHover = planet.userData.section as Section;
           planet.scale.setScalar((planet.userData.originalScale || 1) * 1.3);
           hoveredMeshes.push(planet);
+        } else {
+          // Also check for center spiral (hero section) hover in exploration mode
+          const heroIntersects = raycaster.intersectObjects(sectionData.hero.interactiveMeshes);
+          if (heroIntersects.length > 0) {
+            foundHover = 'hero';
+            // Highlight hero meshes
+            sectionData.hero.meshes.forEach(mesh => {
+              (mesh.material as THREE.MeshBasicMaterial).opacity = (mesh.userData.originalOpacity || 0.6) * 1.5;
+              hoveredMeshes.push(mesh);
+            });
+          }
         }
       } else {
         // Default mode - check interactive meshes
@@ -752,8 +859,19 @@ export function ThreeScene() {
     };
 
     const handleClick = (event: MouseEvent) => {
+      // Don't navigate if we're transitioning modes
+      if (isModeTransitioningRef.current) {
+        return;
+      }
+
       // Don't navigate if we just finished dragging or are currently dragging
       if (sceneRef.current?.explorationCamera.isDragging || sceneRef.current?.explorationCamera.wasDragging) {
+        return;
+      }
+
+      // Ignore clicks on UI elements (buttons, links, etc.)
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'BUTTON' || target.closest('button') || target.closest('a') || target.closest('[role="button"]')) {
         return;
       }
 
@@ -776,6 +894,18 @@ export function ThreeScene() {
           // Small delay to ensure mode switch completes before navigation
           setTimeout(() => {
             navigateToSection(section);
+            setShowPrompt(false);
+          }, 100);
+          return;
+        }
+        
+        // Also check for center spiral (hero section) clicks in exploration mode
+        const heroIntersects = raycaster.intersectObjects(sectionData.hero.interactiveMeshes);
+        if (heroIntersects.length > 0) {
+          // Clicked on center spiral - go home
+          setNavigationMode('default');
+          setTimeout(() => {
+            navigateToSection('hero');
             setShowPrompt(false);
           }, 100);
         }
@@ -871,12 +1001,12 @@ export function ThreeScene() {
       // Camera movement based on mode
       if (sceneRef.current.navigationMode === 'exploration') {
         // Exploration mode: orbital camera with boundaries
-        const center = new THREE.Vector3(0, 0, -100);
+        const center = new THREE.Vector3(0, 0, 0); // Center is now at origin
         const expCam = sceneRef.current.explorationCamera;
         
-        // Enforce radius boundaries (min and max distance) - tighter to keep all planets in view
-        const minRadius = 150;
-        const maxRadius = 250;
+        // Enforce radius boundaries (min and max distance) - keep all planets and center in view
+        const minRadius = 170;
+        const maxRadius = 280;
         expCam.radius = Math.max(minRadius, Math.min(maxRadius, expCam.radius));
         
         // Enforce phi boundaries (vertical angle) - tighter range to keep planets in view
@@ -893,6 +1023,8 @@ export function ThreeScene() {
         // Animate planets and labels (only if visible)
         if (sceneRef.current.planetMeshes) {
           sceneRef.current.planetMeshes.forEach((planet: THREE.Mesh, index: number) => {
+            const label = sceneRef.current.planetLabels?.[index] as THREE.Sprite;
+            
             if (planet.visible && planet.scale.x > 0.1) {
               planet.rotation.y += 0.01;
               planet.rotation.x += 0.005;
@@ -901,15 +1033,23 @@ export function ThreeScene() {
               const baseScale = planet.userData.originalScale || 1;
               planet.scale.setScalar(baseScale * pulse);
               
-              // Update label position to follow planet and face camera
-              const label = sceneRef.current.planetLabels?.[index] as THREE.Sprite;
-              if (label && planet.visible) {
-                // Always show labels in exploration mode
-                label.visible = true;
+              // Update label position to follow planet and face camera - ALWAYS VISIBLE
+              if (label) {
+                label.visible = true; // Always visible in exploration mode
                 label.position.copy(planet.position);
-                label.position.y += 50; // Keep label above planet (increased distance)
-                label.scale.setScalar(baseScale * pulse * 0.25);
+                label.position.y += 50; // Keep label above planet (matching initial position)
+                // Use fixed scale for labels so they're always readable, regardless of planet size
+                label.scale.setScalar(1.0);
                 // Make label always face camera
+                label.lookAt(camera.position);
+              }
+            } else if (label) {
+              // Even if planet is not fully visible, show label if planet exists
+              label.visible = planet.visible && planet.scale.x > 0.05;
+              if (label.visible) {
+                label.position.copy(planet.position);
+                label.position.y += 50;
+                label.scale.setScalar(1.0);
                 label.lookAt(camera.position);
               }
             }
@@ -1010,7 +1150,14 @@ export function ThreeScene() {
         hoveredSection={hoveredSection}
         onNavigate={navigateToSection}
         navigationMode={navigationMode}
-        onModeChange={setNavigationMode}
+        onModeChange={(mode) => {
+          isModeTransitioningRef.current = true;
+          setNavigationMode(mode);
+          // Allow mode transition to complete before allowing clicks
+          setTimeout(() => {
+            isModeTransitioningRef.current = false;
+          }, 500);
+        }}
       />
       {navigationMode === 'default' && (
         <ContentOverlay 

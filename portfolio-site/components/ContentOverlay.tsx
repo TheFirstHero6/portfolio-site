@@ -45,14 +45,14 @@ export function ContentOverlay({ currentSection, isTransitioning, onNavigate }: 
     });
   }, []);
 
-        // Pre-render all content components (hidden) for instant switching
-        const allContent = {
-          hero: <HeroContent onNavigate={onNavigate} />,
-          about: <AboutContent />,
-          projects: <ProjectsContent />,
-          skills: <SkillsContent />,
-          contact: <ContactContent />,
-        };
+  // Pre-render all content components (hidden) for instant switching
+  const allContent = {
+    hero: <HeroContent onNavigate={onNavigate} />,
+    about: <AboutContent />,
+    projects: <ProjectsContent />,
+    skills: <SkillsContent />,
+    contact: <ContactContent />,
+  };
 
   const sectionColor = getSectionColor(currentSection);
 

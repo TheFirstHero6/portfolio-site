@@ -27,7 +27,7 @@ const features = [
 
 export function AboutContent() {
   return (
-    <div className="space-y-12">
+    <div className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -36,7 +36,7 @@ export function AboutContent() {
         className="text-center max-w-3xl mx-auto"
       >
         <motion.div
-          className="mb-8 p-6 rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative overflow-hidden"
+          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative overflow-hidden"
           style={{
             borderColor: '#a855f760',
             boxShadow: '0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(168, 85, 247, 0.15)',
@@ -59,40 +59,41 @@ export function AboutContent() {
               ease: "easeInOut",
             }}
           />
-          <h2 className="relative z-10 text-4xl md:text-5xl font-bold mb-2">
+          <h2 className="relative z-10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
               About Me
             </span>
           </h2>
-          <p className="relative z-10 text-white/80 text-sm">
+          <p className="relative z-10 text-white/80 text-xs sm:text-sm">
             Exploring the galaxy of development
           </p>
         </motion.div>
-        <div className="space-y-4 text-white leading-relaxed text-lg font-medium bg-black/60 backdrop-blur-xl p-6 rounded-2xl border-2" style={{ borderColor: '#a855f760', boxShadow: '0 0 30px rgba(168, 85, 247, 0.2)' }}>
-          <p className="text-white">
-            Hi, I'm <span className="text-purple-300 font-semibold">Klaus</span>! I'm a full-stack developer who specializes in{" "}
-            <span className="text-white font-semibold bg-purple-500/30 px-2 py-0.5 rounded">React/Next.js</span> with a focus on
-            building practical, high-performing applications that deliver phenomenal user experiences.
+        <div className="space-y-3 sm:space-y-4 text-white leading-relaxed text-sm sm:text-base md:text-lg">
+          <p>
+            Hi, I'm <span className="text-purple-400 font-semibold">Klaus</span>! I'm a full-stack developer who specializes in{" "}
+            <span className="text-white font-semibold bg-purple-500/20 px-2 py-0.5 rounded">React/Next.js</span> with a focus on
+            modern, high-performing frontends.
           </p>
-          <p className="text-white">
+          <p>
             At the time of writing, RTS game{" "}
-            <span className="text-white font-semibold bg-blue-500/30 px-2 py-0.5 rounded">War of the Elector V 1.4</span> is out
+            <span className="text-white font-semibold bg-blue-500/20 px-2 py-0.5 rounded">War of the Elector V 1.4</span> is out
             now. I built this with my favorite tech stack,{" "}
-            <span className="text-blue-300 font-semibold">Next/Tailwind</span> and{" "}
-            <span className="text-purple-300 font-semibold">Prisma/PostgreSQL</span>. I'm something of a JS framework generalist - I like to build in{" "}
-            <span className="text-green-300 font-semibold">Vue.js</span> and adore{" "}
-            <span className="text-orange-300 font-semibold">Svelte</span> whenever I get to use it.
+            <span className="text-blue-400 font-medium">Next/Tailwind</span> and{" "}
+            <span className="text-purple-400 font-medium">Prisma/PostgreSQL</span>. I'm something of a JS framework generalist - I like to build in{" "}
+            <span className="text-green-400 font-medium">Vue.js</span> and adore{" "}
+            <span className="text-orange-400 font-medium">Svelte</span> whenever I get to use it.
           </p>
-          <p className="text-white">
+          <p>
             I also have a strong interest/background in{" "}
-            <span className="text-white font-semibold bg-pink-500/30 px-2 py-0.5 rounded">QA and testing</span>. Having built my own
-            full-stack projects, I'm passionate about software quality, reliability, and creating intuitive user interfaces that users actually enjoy using.
+            <span className="text-white font-semibold bg-pink-500/20 px-2 py-0.5 rounded">QA and testing</span>. Having built my own
+            full-stack projects, I'm passionate about software quality and end-to-end
+            reliability.
           </p>
         </div>
       </motion.div>
 
       {/* Feature Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
         {features.map((feature, index) => (
           <motion.div
             key={feature.title}
@@ -103,7 +104,7 @@ export function AboutContent() {
             className="relative group"
           >
             <div 
-              className="p-8 rounded-2xl bg-black/70 backdrop-blur-2xl border-2 hover:border-white/50 transition-all h-full relative"
+              className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 hover:border-white/50 transition-all h-full relative"
               style={{
                 borderColor: '#a855f760',
                 boxShadow: '0 0 30px rgba(168, 85, 247, 0.3), 0 0 60px rgba(168, 85, 247, 0.15)',
@@ -113,15 +114,15 @@ export function AboutContent() {
               <motion.div
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
-                className={`mb-6 w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} p-[2px]`}
+                className={`mb-4 sm:mb-5 md:mb-6 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${feature.gradient} p-[2px]`}
               >
                 <div className="w-full h-full rounded-2xl bg-[#000510] flex items-center justify-center">
-                  <feature.icon className="text-white" size={28} />
+                  <feature.icon className="text-white w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
                 </div>
               </motion.div>
 
-              <h3 className="mb-3 text-white">{feature.title}</h3>
-              <p className="text-white/90 text-sm leading-relaxed">
+              <h3 className="mb-2 sm:mb-3 text-white text-base sm:text-lg">{feature.title}</h3>
+              <p className="text-white/90 text-xs sm:text-sm leading-relaxed">
                 {feature.description}
               </p>
 
@@ -142,23 +143,23 @@ export function AboutContent() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
-        className="p-8 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-2xl border-2"
+        className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-2xl border-2"
         style={{
           borderColor: '#a855f760',
           boxShadow: '0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(168, 85, 247, 0.15)',
         }}
       >
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center flex-shrink-0">
-            <Award className="text-white" size={24} />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+            <Award className="text-white w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <h3 className="text-white mb-2">My Approach</h3>
-            <p className="text-white/90 leading-relaxed">
-              I believe in creating practical, user-focused solutions that deliver phenomenal experiences. 
-              Every project is an opportunity to solve real problems with clean, efficient code. 
-              From intuitive interfaces to smooth animations and thoughtful interactions, 
-              I'm committed to building applications that users love to use.
+            <h3 className="text-white mb-1 sm:mb-2 text-base sm:text-lg">My Approach</h3>
+            <p className="text-white/90 leading-relaxed text-sm sm:text-base">
+              I believe in creating not just functional, but delightful user experiences. 
+              Every project is an opportunity to push the boundaries of what's possible on 
+              the web. From pixel-perfect designs to smooth animations and immersive 3D 
+              experiences, I'm committed to delivering excellence.
             </p>
           </div>
         </div>

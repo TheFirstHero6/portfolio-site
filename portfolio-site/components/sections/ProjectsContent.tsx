@@ -30,7 +30,7 @@ export function ProjectsContent() {
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -39,7 +39,7 @@ export function ProjectsContent() {
         className="text-center"
       >
         <motion.div
-          className="mb-8 p-6 rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative overflow-hidden mx-auto max-w-2xl"
+          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative overflow-hidden mx-auto max-w-2xl"
           style={{
             borderColor: '#6366f160',
             boxShadow: '0 0 40px rgba(99, 102, 241, 0.3), 0 0 80px rgba(99, 102, 241, 0.15)',
@@ -61,19 +61,19 @@ export function ProjectsContent() {
               ease: "easeInOut",
             }}
           />
-          <h2 className="relative z-10 text-4xl md:text-5xl font-bold mb-2">
+          <h2 className="relative z-10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
               Featured Projects
             </span>
           </h2>
-          <p className="relative z-10 text-white/80 text-sm">
+          <p className="relative z-10 text-white/80 text-xs sm:text-sm">
             A selection of projects showcasing my expertise in modern web development
           </p>
         </motion.div>
       </motion.div>
 
       {/* Projects Grid */}
-      <div className={`grid gap-6 ${displayProjects.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-3'}`}>
+      <div className={`grid gap-4 sm:gap-5 md:gap-6 ${displayProjects.length === 2 ? 'sm:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-2 md:grid-cols-3'}`}>
         {displayProjects.map((project, index) => (
           <motion.div
             key={project.id}
@@ -94,14 +94,14 @@ export function ProjectsContent() {
             className="group relative"
           >
             <div 
-              className="h-full rounded-2xl bg-black/70 backdrop-blur-2xl border-2 overflow-hidden transition-all relative"
+              className="h-full rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 overflow-hidden transition-all relative"
               style={{
                 borderColor: '#6366f160',
                 boxShadow: '0 0 30px rgba(99, 102, 241, 0.3), 0 0 60px rgba(99, 102, 241, 0.15)',
               }}
             >
               {/* Image */}
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">
                 {project.image ? (
                   <ImageWithFallback
                     src={project.image}
@@ -131,23 +131,23 @@ export function ProjectsContent() {
               </div>
 
               {/* Content */}
-              <div className="p-6">
-                <h3 className="mb-2 text-white group-hover:text-indigo-300 transition-colors text-lg font-semibold">
+              <div className="p-4 sm:p-5 md:p-6">
+                <h3 className="mb-1 sm:mb-2 text-white group-hover:text-indigo-300 transition-colors text-base sm:text-lg font-semibold">
                   {project.title}
                 </h3>
                 {project.subtitle && (
-                  <p className="text-white/50 text-xs mb-2">{project.subtitle}</p>
+                  <p className="text-white/50 text-[10px] sm:text-xs mb-1 sm:mb-2">{project.subtitle}</p>
                 )}
-                <p className="text-white/90 text-sm mb-4 leading-relaxed">
+                <p className="text-white/90 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed">
                   {project.description}
                 </p>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
                   {project.technologies.slice(0, 4).map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 rounded-full bg-black/50 border border-indigo-500/40 text-white text-xs"
+                      className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-black/50 border border-indigo-500/40 text-white text-[10px] sm:text-xs"
                       style={{
                         boxShadow: '0 0 10px rgba(99, 102, 241, 0.2)',
                       }}
@@ -158,7 +158,7 @@ export function ProjectsContent() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2">
+                <div className="flex gap-1.5 sm:gap-2">
                   {project.link && (
                     <motion.a
                       href={project.link}
@@ -166,7 +166,7 @@ export function ProjectsContent() {
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex-1 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm flex items-center justify-center gap-2"
+                      className="flex-1 py-1.5 sm:py-2 rounded-md sm:rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2"
                     >
                       <ExternalLink size={14} />
                       <span>{project.id === "navi-ai-desktop" ? "Install now!" : "View Live"}</span>
@@ -179,7 +179,7 @@ export function ProjectsContent() {
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all"
+                      className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all"
                     >
                       <Github size={16} />
                     </motion.a>
@@ -212,7 +212,7 @@ export function ProjectsContent() {
           rel="noopener noreferrer"
           whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(59, 130, 246, 0.5)" }}
           whileTap={{ scale: 0.95 }}
-          className="px-8 py-3 rounded-xl bg-white/8 backdrop-blur-xl border border-white/15 text-white/90 hover:bg-white/10 hover:border-white/25 transition-all inline-block"
+          className="px-6 py-2.5 sm:px-7 sm:py-3 md:px-8 md:py-3 rounded-lg sm:rounded-xl bg-white/8 backdrop-blur-xl border border-white/15 text-white/90 hover:bg-white/10 hover:border-white/25 transition-all inline-block text-xs sm:text-sm"
         >
           View All Projects on GitHub
         </motion.a>

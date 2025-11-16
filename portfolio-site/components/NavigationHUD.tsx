@@ -23,13 +23,15 @@ const sectionInfo: { [key in Section]: { icon: any; label: string; color: string
   contact: { icon: Mail, label: 'Contact', color: '#ec4899' },
 };
 
-// Fixed positions for radar (normalized)
+// Fixed positions for radar (normalized) - updated to match actual planet positions
+// Planets orbit in a circle: about (top), projects (right), skills (bottom), contact (left)
+// Hero is at center
 const radarPositions: { [key in Section]: { x: number; y: number } } = {
-  hero: { x: 50, y: 50 },
-  about: { x: 20, y: 35 },
-  projects: { x: 75, y: 55 },
-  skills: { x: 18, y: 70 },
-  contact: { x: 78, y: 30 },
+  hero: { x: 50, y: 50 }, // Center
+  about: { x: 50, y: 20 }, // Top (angle: -π/2)
+  projects: { x: 80, y: 50 }, // Right (angle: 0)
+  skills: { x: 50, y: 80 }, // Bottom (angle: π/2)
+  contact: { x: 20, y: 50 }, // Left (angle: π)
 };
 
 export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navigationMode, onModeChange }: NavigationHUDProps) {
@@ -40,10 +42,10 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="fixed top-8 left-8 z-50"
+        className="fixed top-2 left-2 sm:top-4 sm:left-4 md:top-8 md:left-8 z-50"
       >
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col gap-2 sm:gap-3 md:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSection}
@@ -51,7 +53,7 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
                 animate={{ scale: 1, rotate: 0 }}
                 exit={{ scale: 0, rotate: 180 }}
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="w-14 h-14 rounded-2xl backdrop-blur-2xl border-2 flex items-center justify-center"
+                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl backdrop-blur-2xl border-2 flex items-center justify-center"
                 style={{ 
                   backgroundColor: `${sectionInfo[currentSection].color}15`,
                   borderColor: `${sectionInfo[currentSection].color}60`,
@@ -60,12 +62,12 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
               >
                 {(() => {
                   const Icon = sectionInfo[currentSection].icon;
-                  return <Icon size={26} style={{ color: sectionInfo[currentSection].color }} />;
+                  return <Icon size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6" style={{ color: sectionInfo[currentSection].color }} />;
                 })()}
               </motion.div>
             </AnimatePresence>
             
-            <div className="p-4 rounded-xl bg-black/60 backdrop-blur-2xl border border-white/20">
+            <div className="p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl bg-black/60 backdrop-blur-2xl border border-white/20">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSection}
@@ -74,8 +76,8 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ type: "spring", stiffness: 200, damping: 20 }}
                 >
-                  <p className="text-white text-lg">{sectionInfo[currentSection].label}</p>
-                  <p className="text-white/50 text-xs mt-0.5">Exploring 3D Space</p>
+                  <p className="text-white text-sm sm:text-base md:text-lg">{sectionInfo[currentSection].label}</p>
+                  <p className="text-white/50 text-[10px] sm:text-xs mt-0.5 hidden sm:block">Exploring 3D Space</p>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -92,7 +94,7 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
               onClick={() => onModeChange(navigationMode === 'default' ? 'exploration' : 'default')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 rounded-xl bg-black/80 backdrop-blur-2xl border-2 border-white/30 flex items-center gap-3 text-white hover:bg-black/90 transition-all w-full relative overflow-hidden"
+              className="px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-lg sm:rounded-xl bg-black/80 backdrop-blur-2xl border-2 border-white/30 flex items-center gap-2 sm:gap-3 text-white hover:bg-black/90 transition-all w-full relative overflow-hidden text-xs sm:text-sm"
               style={{
                 boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)',
               }}
@@ -115,16 +117,18 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
                 />
               )}
               
-              <span className="relative z-10 flex items-center gap-3">
+              <span className="relative z-10 flex items-center gap-2 sm:gap-3">
                 {navigationMode === 'default' ? (
                   <>
-                    <Orbit size={20} />
-                    <span className="font-semibold">Explore Mode</span>
+                    <Orbit size={16} className="sm:w-5 sm:h-5" />
+                    <span className="font-semibold hidden sm:inline">Explore Mode</span>
+                    <span className="font-semibold sm:hidden">Explore</span>
                   </>
                 ) : (
                   <>
-                    <Navigation size={20} />
-                    <span className="font-semibold">Default Mode</span>
+                    <Navigation size={16} className="sm:w-5 sm:h-5" />
+                    <span className="font-semibold hidden sm:inline">Default Mode</span>
+                    <span className="font-semibold sm:hidden">Default</span>
                   </>
                 )}
               </span>
@@ -136,7 +140,7 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.5, duration: 0.5 }}
-                className="mt-2 text-center"
+                className="mt-1 sm:mt-2 text-center hidden sm:block"
               >
                 <motion.p
                   className="text-white/50 text-xs italic"
@@ -161,9 +165,9 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1 }}
-              className="fixed bottom-8 right-8 z-50"
+              className="fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-8 md:right-8 z-50 hidden sm:block"
             >
-              <div className="relative w-64 h-64 rounded-full bg-black/80 backdrop-blur-2xl border-2 border-white/40 p-6 shadow-2xl">
+              <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full bg-black/80 backdrop-blur-2xl border-2 border-white/40 p-4 sm:p-5 md:p-6 shadow-2xl">
                 {/* Radar grid circles - more visible */}
                 <div className="absolute inset-6 rounded-full border-2 border-white/30" />
                 <div className="absolute inset-12 rounded-full border border-white/20" />
@@ -289,10 +293,10 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none hidden sm:block"
           >
             <div 
-              className="px-10 py-6 rounded-3xl backdrop-blur-2xl border-2 relative overflow-hidden"
+              className="px-6 py-4 sm:px-8 sm:py-5 md:px-10 md:py-6 rounded-2xl sm:rounded-3xl backdrop-blur-2xl border-2 relative overflow-hidden"
               style={{
                 backgroundColor: `${sectionInfo[hoveredSection].color}08`,
                 borderColor: `${sectionInfo[hoveredSection].color}80`,
@@ -312,7 +316,7 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
                 transition={{ duration: 2, repeat: Infinity }}
               />
 
-              <div className="relative z-10 flex items-center gap-4">
+              <div className="relative z-10 flex items-center gap-3 sm:gap-4">
                 {(() => {
                   const Icon = sectionInfo[hoveredSection].icon;
                   return (
@@ -320,13 +324,13 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
                       animate={{ rotate: [0, 360] }}
                       transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                     >
-                      <Icon size={32} style={{ color: sectionInfo[hoveredSection].color }} />
+                      <Icon size={24} className="sm:w-8 sm:h-8" style={{ color: sectionInfo[hoveredSection].color }} />
                     </motion.div>
                   );
                 })()}
                 <div>
                   <p 
-                    className="text-2xl font-semibold"
+                    className="text-lg sm:text-xl md:text-2xl font-semibold"
                     style={{ color: sectionInfo[hoveredSection].color }}
                   >
                     {sectionInfo[hoveredSection].label}
@@ -343,9 +347,9 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
+        className="fixed bottom-2 left-1/2 -translate-x-1/2 z-50 sm:bottom-4 md:bottom-8"
       >
-        <div className="flex items-center gap-3 px-8 py-4 rounded-full bg-black/60 backdrop-blur-2xl border border-white/20">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 px-3 py-2 sm:px-5 sm:py-3 md:px-8 md:py-4 rounded-full bg-black/60 backdrop-blur-2xl border border-white/20">
           {(['hero', 'about', 'projects', 'skills', 'contact'] as Section[]).map((section, index) => {
             const isActive = section === currentSection;
             const isHovered = section === hoveredSection;
@@ -360,7 +364,7 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
               >
                 <motion.div
                   className={`rounded-full transition-all ${
-                    isActive ? 'w-10 h-2.5' : 'w-2.5 h-2.5'
+                    isActive ? 'w-6 h-1.5 sm:w-8 sm:h-2 md:w-10 md:h-2.5' : 'w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-2.5 md:h-2.5'
                   }`}
                   style={{
                     backgroundColor: isActive || isHovered 
@@ -400,14 +404,15 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.2 }}
-          className="fixed top-8 right-8 z-50"
+          className="fixed top-2 right-2 sm:top-4 sm:right-4 md:top-8 md:right-8 z-50 hidden sm:flex"
         >
-          <div className="p-4 rounded-xl bg-black/60 backdrop-blur-2xl border border-white/20 text-white/70 text-sm flex items-center gap-3">
-            <div className="flex gap-2">
-              <kbd className="px-3 py-1.5 rounded-lg bg-white/10 border border-white/30 text-white text-xs">←</kbd>
-              <kbd className="px-3 py-1.5 rounded-lg bg-white/10 border border-white/30 text-white text-xs">→</kbd>
+          <div className="p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl bg-black/60 backdrop-blur-2xl border border-white/20 text-white/70 text-xs sm:text-sm flex items-center gap-2 sm:gap-3">
+            <div className="flex gap-1 sm:gap-2">
+              <kbd className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg bg-white/10 border border-white/30 text-white text-[10px] sm:text-xs">←</kbd>
+              <kbd className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg bg-white/10 border border-white/30 text-white text-[10px] sm:text-xs">→</kbd>
             </div>
-            <span>Navigate Space</span>
+            <span className="hidden md:inline">Navigate Space</span>
+            <span className="md:hidden">Nav</span>
           </div>
         </motion.div>
       )}
@@ -419,9 +424,9 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ delay: 0.3 }}
-          className="fixed top-1/2 left-8 -translate-y-1/2 z-50 max-w-xs"
+          className="fixed top-1/2 left-2 sm:left-4 md:left-8 -translate-y-1/2 z-50 max-w-[280px] sm:max-w-xs"
         >
-          <div className="p-6 rounded-2xl bg-black/80 backdrop-blur-2xl border-2 border-white/30 relative overflow-hidden"
+          <div className="p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-black/80 backdrop-blur-2xl border-2 border-white/30 relative overflow-hidden"
             style={{
               boxShadow: '0 0 30px rgba(59, 130, 246, 0.3)',
             }}
@@ -443,34 +448,34 @@ export function NavigationHUD({ currentSection, hoveredSection, onNavigate, navi
               }}
             />
             
-            <div className="relative z-10 space-y-4">
-              <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
-                <Orbit size={20} className="text-blue-400" />
-                Exploration Mode
+            <div className="relative z-10 space-y-3 sm:space-y-4">
+              <h3 className="text-white font-semibold text-base sm:text-lg mb-3 sm:mb-4 flex items-center gap-2">
+                <Orbit size={18} className="sm:w-5 sm:h-5 text-blue-400" />
+                <span className="text-sm sm:text-base md:text-lg">Exploration Mode</span>
               </h3>
               
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <Hand className="text-blue-400 mt-0.5 flex-shrink-0" size={18} />
+              <div className="space-y-2 sm:space-y-3">
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <Hand className="text-blue-400 mt-0.5 flex-shrink-0" size={16} />
                   <div>
-                    <p className="text-white text-sm font-medium">Drag to Rotate</p>
-                    <p className="text-white/60 text-xs">Click and drag to orbit around the solar system</p>
+                    <p className="text-white text-xs sm:text-sm font-medium">Drag to Rotate</p>
+                    <p className="text-white/60 text-[10px] sm:text-xs">Click and drag to orbit around the solar system</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-3">
-                  <MousePointerClick className="text-purple-400 mt-0.5 flex-shrink-0" size={18} />
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <MousePointerClick className="text-purple-400 mt-0.5 flex-shrink-0" size={16} />
                   <div>
-                    <p className="text-white text-sm font-medium">Click Planets</p>
-                    <p className="text-white/60 text-xs">Click any labeled planet to navigate to that section</p>
+                    <p className="text-white text-xs sm:text-sm font-medium">Click Planets</p>
+                    <p className="text-white/60 text-[10px] sm:text-xs">Click any labeled planet to navigate to that section</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-3">
-                  <Navigation className="text-pink-400 mt-0.5 flex-shrink-0" size={18} />
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <Navigation className="text-pink-400 mt-0.5 flex-shrink-0" size={16} />
                   <div>
-                    <p className="text-white text-sm font-medium">View All Sections</p>
-                    <p className="text-white/60 text-xs">All sections are visible as planets in orbit</p>
+                    <p className="text-white text-xs sm:text-sm font-medium">View All Sections</p>
+                    <p className="text-white/60 text-[10px] sm:text-xs">All sections are visible as planets in orbit</p>
                   </div>
                 </div>
               </div>
