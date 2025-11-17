@@ -23,7 +23,7 @@ const socialLinks = [
 
 export function ContactContent() {
   return (
-    <div className="grid lg:grid-cols-2 gap-6 sm:gap-7 md:gap-8">
+    <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16 xl:gap-20">
       {/* Contact Form */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
@@ -71,7 +71,7 @@ export function ContactContent() {
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        className="space-y-4 sm:space-y-5 md:space-y-6"
+        className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12"
       >
         <div 
           className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative"

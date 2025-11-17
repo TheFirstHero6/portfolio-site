@@ -27,7 +27,7 @@ const features = [
 
 export function AboutContent() {
   return (
-    <div className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12">
+    <div className="space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-16 xl:space-y-20">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -93,7 +93,7 @@ export function AboutContent() {
       </motion.div>
 
       {/* Feature Cards */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
         {features.map((feature, index) => (
           <motion.div
             key={feature.title}

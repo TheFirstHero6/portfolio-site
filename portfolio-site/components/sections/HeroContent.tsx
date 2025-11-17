@@ -44,12 +44,12 @@ export function HeroContent({ onNavigate }: HeroContentProps) {
   }, [displayText, isTyping, currentLine]);
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12 items-center">
+    <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16 xl:gap-20 items-start">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="space-y-4 sm:space-y-6 md:space-y-8"
+        className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12"
       >
         {/* Code Terminal */}
         <div 
@@ -83,7 +83,7 @@ export function HeroContent({ onNavigate }: HeroContentProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="mb-4 sm:mb-6"
+            className="mb-6 sm:mb-8 md:mb-10"
           >
             <span className="block text-white font-semibold mb-1 sm:mb-2 text-sm sm:text-base">I'm</span>
             <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
@@ -95,7 +95,7 @@ export function HeroContent({ onNavigate }: HeroContentProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="text-xl sm:text-2xl text-white font-semibold mb-3 sm:mb-4"
+            className="text-xl sm:text-2xl text-white font-semibold mb-4 sm:mb-6 md:mb-8"
           >
             Full Stack Developer
           </motion.p>
@@ -104,7 +104,7 @@ export function HeroContent({ onNavigate }: HeroContentProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="text-white text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 font-medium"
+            className="text-white text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 md:mb-12 font-medium"
           >
             I craft exceptional digital experiences with modern web technologies. 
             Specialized in React, Next.js, and TypeScript, building applications 

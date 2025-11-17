@@ -30,7 +30,7 @@ export function ProjectsContent() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12">
+    <div className="space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-16 xl:space-y-20">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -73,7 +73,7 @@ export function ProjectsContent() {
       </motion.div>
 
       {/* Projects Grid */}
-      <div className={`grid gap-4 sm:gap-5 md:gap-6 ${displayProjects.length === 2 ? 'sm:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-2 md:grid-cols-3'}`}>
+      <div className={`grid gap-6 sm:gap-8 md:gap-10 lg:gap-12 ${displayProjects.length === 2 ? 'sm:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-2 md:grid-cols-3'}`}>
         {displayProjects.map((project, index) => (
           <motion.div
             key={project.id}

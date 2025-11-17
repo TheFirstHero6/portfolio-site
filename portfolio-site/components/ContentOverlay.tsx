@@ -83,18 +83,10 @@ export function ContentOverlay({ currentSection, isTransitioning, onNavigate }: 
             }}
             exit={{ opacity: 0, scale: 1.1, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="w-full h-full flex items-center justify-center p-3 sm:p-4 md:p-6 lg:p-8 overflow-y-auto overscroll-contain"
+            className="w-full h-full flex items-start justify-center p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 overflow-y-auto overscroll-contain"
           >
             <motion.div
-              className="max-w-7xl w-full pointer-events-auto py-2 sm:py-4 md:py-6 lg:py-8 min-h-0"
-              animate={{
-                y: [0, -8, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              className="max-w-7xl w-full pointer-events-auto py-4 sm:py-6 md:py-8 lg:py-10 xl:py-12"
             >
               {allContent[currentSection]}
             </motion.div>

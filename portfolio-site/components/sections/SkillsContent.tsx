@@ -78,7 +78,7 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
 
 export function SkillsContent() {
   return (
-    <div className="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12">
+    <div className="space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-16 xl:space-y-20">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -121,7 +121,7 @@ export function SkillsContent() {
       </motion.div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.label}
@@ -147,7 +147,7 @@ export function SkillsContent() {
       </div>
 
       {/* Skills Grid */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
         {skillCategories.map((category, categoryIndex) => (
           <motion.div
             key={category.category}
