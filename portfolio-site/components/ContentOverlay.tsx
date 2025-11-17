@@ -57,7 +57,7 @@ export function ContentOverlay({ currentSection, isTransitioning, onNavigate }: 
   const sectionColor = getSectionColor(currentSection);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-40">
+    <div className="fixed inset-0 pointer-events-none z-40 touch-auto">
       {/* Section-specific background glow */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
@@ -83,10 +83,10 @@ export function ContentOverlay({ currentSection, isTransitioning, onNavigate }: 
             }}
             exit={{ opacity: 0, scale: 1.1, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="w-full h-full flex items-center justify-center p-8"
+            className="w-full h-full flex items-center justify-center p-3 sm:p-4 md:p-6 lg:p-8 overflow-y-auto overscroll-contain"
           >
             <motion.div
-              className="max-w-7xl w-full pointer-events-auto"
+              className="max-w-7xl w-full pointer-events-auto py-2 sm:py-4 md:py-6 lg:py-8 min-h-0"
               animate={{
                 y: [0, -8, 0],
               }}

@@ -741,6 +741,162 @@ export function ThreeScene() {
     let mouseY = 0;
     let hoveredMeshes: THREE.Mesh[] = [];
 
+    // Touch/swipe handling for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isTouchActive = false;
+
+    // Handle touch start for swipe detection and exploration mode
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length === 1) {
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
+        touchStartTime = Date.now();
+        isTouchActive = true;
+
+        // If in exploration mode, start dragging
+        if (sceneRef.current?.navigationMode === 'exploration') {
+          sceneRef.current.explorationCamera.isDragging = true;
+          sceneRef.current.explorationCamera.wasDragging = false;
+          sceneRef.current.explorationCamera.dragStartX = touchStartX;
+          sceneRef.current.explorationCamera.dragStartY = touchStartY;
+          sceneRef.current.explorationCamera.lastMouseX = touchStartX;
+          sceneRef.current.explorationCamera.lastMouseY = touchStartY;
+        }
+      }
+    };
+
+    // Handle touch move for exploration mode dragging
+    const handleTouchMove = (event: TouchEvent) => {
+      if (event.touches.length === 1 && isTouchActive) {
+        const touch = event.touches[0];
+        const currentX = touch.clientX;
+        const currentY = touch.clientY;
+
+        // Handle drag in exploration mode
+        if (sceneRef.current?.navigationMode === 'exploration' && sceneRef.current.explorationCamera.isDragging) {
+          const deltaX = currentX - sceneRef.current.explorationCamera.lastMouseX;
+          const deltaY = currentY - sceneRef.current.explorationCamera.lastMouseY;
+          
+          sceneRef.current.explorationCamera.theta -= deltaX * 0.01;
+          sceneRef.current.explorationCamera.phi += deltaY * 0.01;
+          
+          // Enforce boundaries
+          sceneRef.current.explorationCamera.phi = Math.max(0.4, Math.min(Math.PI - 0.4, sceneRef.current.explorationCamera.phi));
+          
+          sceneRef.current.explorationCamera.lastMouseX = currentX;
+          sceneRef.current.explorationCamera.lastMouseY = currentY;
+          
+          // Prevent default to avoid scrolling
+          event.preventDefault();
+        }
+
+        // Update mouse position for raycasting
+        mouseX = (currentX / window.innerWidth) * 2 - 1;
+        mouseY = -(currentY / window.innerHeight) * 2 + 1;
+        mouse.x = mouseX;
+        mouse.y = mouseY;
+      }
+    };
+
+    // Handle touch end for swipe detection and exploration mode
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (!isTouchActive) return;
+
+      const touchEndTime = Date.now();
+      const timeDiff = touchEndTime - touchStartTime;
+
+      // Handle exploration mode drag end
+      if (sceneRef.current?.navigationMode === 'exploration' && sceneRef.current.explorationCamera.isDragging) {
+        const touch = event.changedTouches[0];
+        const dragDistance = Math.sqrt(
+          Math.pow(touch.clientX - sceneRef.current.explorationCamera.dragStartX, 2) +
+          Math.pow(touch.clientY - sceneRef.current.explorationCamera.dragStartY, 2)
+        );
+        
+        if (dragDistance > 5) {
+          sceneRef.current.explorationCamera.wasDragging = true;
+          setTimeout(() => {
+            if (sceneRef.current) {
+              sceneRef.current.explorationCamera.wasDragging = false;
+            }
+          }, 100);
+        }
+        
+        sceneRef.current.explorationCamera.isDragging = false;
+        isTouchActive = false;
+        return;
+      }
+
+      // Handle swipe gestures in default mode
+      if (sceneRef.current?.navigationMode === 'default' && timeDiff < 300 && event.changedTouches.length === 1) {
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+        const absDeltaX = Math.abs(deltaX);
+        const absDeltaY = Math.abs(deltaY);
+
+        // Only trigger swipe if horizontal movement is greater than vertical (to avoid conflicts with scrolling)
+        if (absDeltaX > absDeltaY && absDeltaX > 50) {
+          const sections: Section[] = ['hero', 'about', 'projects', 'skills', 'contact'];
+          const current = currentSectionRef.current;
+          const currentIndex = sections.indexOf(current);
+
+          if (currentIndex !== -1) {
+            if (deltaX > 0) {
+              // Swipe right - go to previous section
+              const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
+              navigateToSection(sections[prevIndex]);
+              setShowPrompt(false);
+            } else {
+              // Swipe left - go to next section
+              const nextIndex = (currentIndex + 1) % sections.length;
+              navigateToSection(sections[nextIndex]);
+              setShowPrompt(false);
+            }
+          }
+        } else if (absDeltaX < 10 && absDeltaY < 10) {
+          // Small movement - treat as tap, check for planet/hero clicks in exploration mode
+          if (sceneRef.current?.navigationMode === 'exploration') {
+            const touch = event.changedTouches[0];
+            mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+
+            // Check planets
+            const visiblePlanets = sceneRef.current.planetMeshes.filter((p: THREE.Mesh) => p.visible && p.scale.x > 0.5);
+            const intersects = raycaster.intersectObjects(visiblePlanets);
+            if (intersects.length > 0) {
+              const planet = intersects[0].object as THREE.Mesh;
+              const section = planet.userData.section as Section;
+              setNavigationMode('default');
+              setTimeout(() => {
+                navigateToSection(section);
+                setShowPrompt(false);
+              }, 100);
+              isTouchActive = false;
+              return;
+            }
+
+            // Check hero spiral
+            const heroIntersects = raycaster.intersectObjects(sectionData.hero.interactiveMeshes);
+            if (heroIntersects.length > 0) {
+              setNavigationMode('default');
+              setTimeout(() => {
+                navigateToSection('hero');
+                setShowPrompt(false);
+              }, 100);
+              isTouchActive = false;
+              return;
+            }
+          }
+        }
+      }
+
+      isTouchActive = false;
+    };
+
     // Drag controls for exploration mode
     const handleMouseDown = (event: MouseEvent) => {
       if (sceneRef.current?.navigationMode === 'exploration') {
@@ -929,6 +1085,11 @@ export function ThreeScene() {
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('click', handleClick);
+    
+    // Touch event listeners for mobile support
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     // Keyboard navigation
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -1114,6 +1275,9 @@ export function ThreeScene() {
       window.removeEventListener('click', handleClick);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       renderer.dispose();
       particlesGeometry.dispose();
       particlesMaterial.dispose();
@@ -1137,7 +1301,7 @@ export function ThreeScene() {
     <>
       <div 
         ref={containerRef} 
-        className="fixed inset-0 w-full h-full" 
+        className="fixed inset-0 w-full h-full touch-none" 
         style={{ 
           cursor: navigationMode === 'exploration' 
             ? (hoveredSection ? 'pointer' : 'grab') 
