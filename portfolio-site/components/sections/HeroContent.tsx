@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Terminal, Mail, ArrowRight } from "lucide-react";
+import { Terminal, Mail, ArrowRight, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const codeLines = [
@@ -147,6 +147,20 @@ export function HeroContent({ onNavigate }: HeroContentProps) {
               <Mail size={20} />
               <span>Contact</span>
             </motion.button>
+
+            <motion.a
+              href="/Klaus_Chamberlain.pdf"
+              download="Klaus_Chamberlain_Resume.pdf"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 sm:px-7 sm:py-3.5 md:px-8 md:py-4 rounded-lg sm:rounded-xl bg-black/60 backdrop-blur-xl border-2 border-white/30 text-white hover:bg-black/80 transition-all flex items-center gap-2 text-sm sm:text-base"
+              style={{
+                boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <Download size={20} />
+              <span>Download Resume</span>
+            </motion.a>
           </motion.div>
         </div>
 

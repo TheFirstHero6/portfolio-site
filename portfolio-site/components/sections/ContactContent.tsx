@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Github, Linkedin, Send, MapPin, Phone } from "lucide-react";
+import { Mail, Github, Linkedin, Send, MapPin, Phone, Download } from "lucide-react";
 import { useState } from "react";
 import ContactForm from "../ContactForm";
 import { getSectionColor } from "../../lib/sectionColors";
@@ -98,6 +98,21 @@ export function ContactContent() {
                     <div>
                       <p className="text-[10px] sm:text-xs text-white/70">Email</p>
                       <p className="text-xs sm:text-sm text-white font-medium break-all">klaus.dev@kclabs.app</p>
+                    </div>
+                  </motion.a>
+
+                  <motion.a
+                    href="/Klaus_Chamberlain.pdf"
+                    download="Klaus_Chamberlain_Resume.pdf"
+                    whileHover={{ x: 8 }}
+                    className="flex items-center gap-3 sm:gap-4 text-white/70 hover:text-white transition-colors"
+                  >
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                      <Download size={18} className="sm:w-5 sm:h-5 text-purple-400" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] sm:text-xs text-white/70">Resume</p>
+                      <p className="text-xs sm:text-sm text-white font-medium">Download PDF</p>
                     </div>
                   </motion.a>
 
