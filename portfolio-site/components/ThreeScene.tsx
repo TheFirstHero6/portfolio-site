@@ -203,9 +203,13 @@ export function ThreeScene() {
           };
           animatePlanet();
         } else {
-          // Smoothly hide planets and labels, disable interaction immediately
+          // In default mode, keep labels visible but hide planets
           planet.visible = false; // Disable immediately to prevent clicks
-          if (label) label.visible = false;
+          // Keep labels visible in default mode
+          if (label) {
+            label.visible = true;
+            label.scale.setScalar(1.0);
+          }
           const startScale = planet.scale.x;
           const startTime = Date.now();
           const duration = 400; // 400ms transition out
@@ -219,14 +223,22 @@ export function ThreeScene() {
             
             planet.scale.setScalar(newScale);
             if (glow) glow.scale.setScalar(newScale * 1.4);
-            if (label) label.scale.setScalar(newScale * 0.3);
+            // Keep labels visible and at full scale in default mode
+            if (label) {
+              label.visible = true;
+              label.scale.setScalar(1.0);
+            }
             
             if (progress < 1) {
               requestAnimationFrame(hidePlanet);
             } else {
               planet.scale.setScalar(0);
               if (glow) glow.scale.setScalar(0);
-              if (label) label.scale.setScalar(0);
+              // Labels stay visible in default mode
+              if (label) {
+                label.visible = true;
+                label.scale.setScalar(1.0);
+              }
             }
           };
           hidePlanet();
@@ -619,12 +631,25 @@ export function ThreeScene() {
     const planetMeshes: THREE.Mesh[] = [];
     const planetLabels: THREE.Sprite[] = [];
     const sectionLabels: { [key in Section]: string } = {
-      hero: 'Home',
-      about: 'About',
-      projects: 'Projects',
-      skills: 'Skills',
-      contact: 'Contact',
+      hero: 'Home (Sun)',
+      about: 'About (Saturn)',
+      projects: 'Projects (Jupiter)',
+      skills: 'Skills (Neptune)',
+      contact: 'Contact (Mars)',
     };
+    
+    // Add label for center Home (Sun)
+    const heroLabelText = sectionLabels.hero;
+    const heroColor = sectionData.hero.color;
+    const heroSignSprite = createSignSprite(heroLabelText, `#${heroColor.toString(16).padStart(6, '0')}`);
+    heroSignSprite.position.copy(sectionData.hero.position);
+    heroSignSprite.position.y += 45; // Position sign above center
+    heroSignSprite.userData = { section: 'hero', isLabel: true };
+    heroSignSprite.scale.setScalar(1.0); // Always visible
+    heroSignSprite.visible = true; // Always visible
+    heroSignSprite.renderOrder = 999; // Render on top
+    scene.add(heroSignSprite);
+    planetLabels.push(heroSignSprite);
     
     // Arrange planets in a circular orbit around the center
     // Hero (Home) is the center spiral (not a planet), others orbit around it
@@ -697,8 +722,8 @@ export function ThreeScene() {
       signSprite.position.copy(planetPos);
       signSprite.position.y += 45; // Position sign above planet (post will extend down)
       signSprite.userData = { section, isLabel: true };
-      signSprite.scale.setScalar(0); // Start hidden
-      signSprite.visible = false;
+      signSprite.scale.setScalar(1.0); // Always visible
+      signSprite.visible = true; // Always visible
       // Make sign always face camera
       signSprite.renderOrder = 999; // Render on top
       scene.add(signSprite);
@@ -1206,7 +1231,7 @@ export function ThreeScene() {
               }
             } else if (label) {
               // Even if planet is not fully visible, show label if planet exists
-              label.visible = planet.visible && planet.scale.x > 0.05;
+              label.visible = true; // Always show labels
               if (label.visible) {
                 label.position.copy(planet.position);
                 label.position.y += 50;
@@ -1218,6 +1243,15 @@ export function ThreeScene() {
         }
       } else {
         // Default mode: smooth camera movement with easing
+        // Update all labels to face camera (including hero label)
+        if (sceneRef.current.planetLabels) {
+          sceneRef.current.planetLabels.forEach((label: THREE.Sprite) => {
+            if (label && label.visible) {
+              label.lookAt(camera.position);
+            }
+          });
+        }
+        
         const distance = camera.position.distanceTo(targetPosition);
         const speed = sceneRef.current.isNavigating ? 0.8 : 1.5;
         const smoothFactor = Math.min(deltaTime * speed, 0.1);

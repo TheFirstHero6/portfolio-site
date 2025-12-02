@@ -39,30 +39,11 @@ export function ProjectsContent() {
         className="text-center"
       >
         <motion.div
-          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative overflow-hidden mx-auto max-w-2xl"
-          style={{
-            borderColor: '#6366f160',
-            boxShadow: '0 0 40px rgba(99, 102, 241, 0.3), 0 0 80px rgba(99, 102, 241, 0.15)',
-          }}
+          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-2xl glass-card relative overflow-hidden mx-auto max-w-2xl"
           whileHover={{ scale: 1.02 }}
         >
-          <motion.div
-            className="absolute inset-0 opacity-30"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.4) 0%, transparent 70%)',
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
           <h2 className="relative z-10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+            <span className="text-gradient">
               Featured Projects
             </span>
           </h2>
@@ -94,11 +75,7 @@ export function ProjectsContent() {
             className="group relative"
           >
             <div 
-              className="h-full rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 overflow-hidden transition-all relative"
-              style={{
-                borderColor: '#6366f160',
-                boxShadow: '0 0 30px rgba(99, 102, 241, 0.3), 0 0 60px rgba(99, 102, 241, 0.15)',
-              }}
+              className="h-full rounded-2xl glass-card overflow-hidden transition-all relative"
             >
               {/* Image */}
               <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">

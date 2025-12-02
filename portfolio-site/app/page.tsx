@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <main
       id="main-content"
-      className="w-full h-screen overflow-hidden bg-[#000510]"
+      className="w-full h-screen overflow-hidden bg-[#030305]"
     >
       <ThreeScene />
     </main>

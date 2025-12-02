@@ -87,30 +87,11 @@ export function SkillsContent() {
         className="text-center"
       >
         <motion.div
-          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative overflow-hidden mx-auto max-w-2xl"
-          style={{
-            borderColor: '#8b5cf660',
-            boxShadow: '0 0 40px rgba(139, 92, 246, 0.3), 0 0 80px rgba(139, 92, 246, 0.15)',
-          }}
+          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-2xl glass-card relative overflow-hidden mx-auto max-w-2xl"
           whileHover={{ scale: 1.02 }}
         >
-          <motion.div
-            className="absolute inset-0 opacity-30"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(139, 92, 246, 0.4) 0%, transparent 70%)',
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
           <h2 className="relative z-10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+            <span className="text-gradient">
               Skills & Expertise
             </span>
           </h2>
@@ -129,11 +110,7 @@ export function SkillsContent() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: index * 0.1, type: "spring" }}
             whileHover={{ scale: 1.05, y: -4 }}
-            className="p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl bg-black/70 backdrop-blur-2xl border-2 text-center group relative"
-            style={{
-              borderColor: '#8b5cf660',
-              boxShadow: '0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(139, 92, 246, 0.15)',
-            }}
+            className="p-4 sm:p-5 md:p-6 rounded-xl glass-card text-center group relative"
           >
             <motion.div 
               className="mb-1 sm:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 text-lg sm:text-xl md:text-2xl"
@@ -154,11 +131,7 @@ export function SkillsContent() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 + categoryIndex * 0.1 }}
-            className="p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative"
-            style={{
-              borderColor: '#8b5cf660',
-              boxShadow: '0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(139, 92, 246, 0.15)',
-            }}
+            className="p-4 sm:p-5 md:p-6 rounded-2xl glass-card relative"
           >
             <h3 className="mb-4 sm:mb-5 md:mb-6 text-white font-semibold text-base sm:text-lg">{category.category}</h3>
             <div className="space-y-4 sm:space-y-5">
@@ -225,10 +198,7 @@ export function SkillsContent() {
                 stiffness: 200,
               }}
               whileHover={{ scale: 1.15, y: -8 }}
-              className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-black/60 backdrop-blur-xl border border-purple-500/40 text-white text-xs sm:text-sm transition-all"
-              style={{
-                boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)',
-              }}
+              className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full glass-card text-white text-xs sm:text-sm transition-all"
             >
               {tech}
             </motion.div>

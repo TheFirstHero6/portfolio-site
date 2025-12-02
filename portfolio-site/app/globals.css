@@ -54,7 +54,7 @@
 /* Modern color palette */
 :root {
   --radius: 12px;
-  --background: oklch(0.98 0.005 264);
+  --background: #030305;
   --foreground: oklch(0.15 0.01 264);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.01 264);
@@ -86,20 +86,26 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   
-  /* Brand colors */
-  --brand-purple: oklch(0.45 0.18 264);
-  --brand-blue: oklch(0.55 0.22 240);
-  --brand-cyan: oklch(0.65 0.18 200);
-  --brand-pink: oklch(0.65 0.22 330);
+  /* Brand colors - Deep Space Theme */
+  --brand-purple: #8b5cf6;
+  --brand-violet: #6366f1;
+  --brand-blue: #3b82f6;
+  --brand-cyan: #06b6d4;
+  --brand-pink: #ec4899;
+  
+  /* Deep Space Colors */
+  --void-black: #030305;
+  --deep-violet: #6366f1;
+  --bright-cyan: #06b6d4;
   
   /* Glass morphism colors */
-  --glass-light: rgba(255, 255, 255, 0.08);
-  --glass-medium: rgba(255, 255, 255, 0.12);
-  --glass-dark: rgba(0, 0, 0, 0.08);
+  --glass-light: rgba(255, 255, 255, 0.05);
+  --glass-medium: rgba(255, 255, 255, 0.08);
+  --glass-dark: rgba(0, 0, 0, 0.2);
 }
 
 .dark {
-  --background: oklch(0.12 0.01 264);
+  --background: #030305;
   --foreground: oklch(0.95 0.005 264);
   --card: oklch(0.18 0.01 264);
   --card-foreground: oklch(0.95 0.005 264);
@@ -131,15 +137,21 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
   
-  /* Brand colors for dark mode */
-  --brand-purple: oklch(0.65 0.22 264);
-  --brand-blue: oklch(0.7 0.24 240);
-  --brand-cyan: oklch(0.75 0.2 200);
-  --brand-pink: oklch(0.75 0.24 330);
+  /* Brand colors for dark mode - Deep Space Theme */
+  --brand-purple: #8b5cf6;
+  --brand-violet: #6366f1;
+  --brand-blue: #3b82f6;
+  --brand-cyan: #06b6d4;
+  --brand-pink: #ec4899;
+  
+  /* Deep Space Colors */
+  --void-black: #030305;
+  --deep-violet: #6366f1;
+  --bright-cyan: #06b6d4;
   
   /* Glass morphism colors for dark mode */
   --glass-light: rgba(255, 255, 255, 0.05);
-  --glass-medium: rgba(255, 255, 255, 0.1);
+  --glass-medium: rgba(255, 255, 255, 0.08);
   --glass-dark: rgba(0, 0, 0, 0.2);
 }
 
@@ -148,11 +160,19 @@
     @apply outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#030305] text-foreground;
   }
 }
 
 /* Enhanced glass morphism utilities */
+@utility glass-card {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
 @utility glass {
   background: var(--glass-light);
   backdrop-filter: blur(16px);
@@ -172,11 +192,23 @@
 }
 
 @utility glass-border {
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @utility glass-shadow {
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+@utility glow-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 40px rgba(99, 102, 241, 0.1);
+}
+
+@utility text-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Typography utilities */

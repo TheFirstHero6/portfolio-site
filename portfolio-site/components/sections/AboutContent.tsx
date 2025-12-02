@@ -36,31 +36,11 @@ export function AboutContent() {
         className="text-center max-w-3xl mx-auto"
       >
         <motion.div
-          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 relative overflow-hidden"
-          style={{
-            borderColor: '#a855f760',
-            boxShadow: '0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(168, 85, 247, 0.15)',
-          }}
+          className="mb-6 sm:mb-8 p-4 sm:p-5 md:p-6 rounded-2xl glass-card relative overflow-hidden"
           whileHover={{ scale: 1.02 }}
         >
-          {/* Animated background glow */}
-          <motion.div
-            className="absolute inset-0 opacity-30"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(168, 85, 247, 0.4) 0%, transparent 70%)',
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
           <h2 className="relative z-10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+            <span className="text-gradient">
               About Me
             </span>
           </h2>
@@ -68,28 +48,35 @@ export function AboutContent() {
             Exploring the galaxy of development
           </p>
         </motion.div>
-        <div className="space-y-3 sm:space-y-4 text-white leading-relaxed text-sm sm:text-base md:text-lg">
-          <p>
-            Hi, I'm <span className="text-purple-400 font-semibold">Klaus</span>! I'm a full-stack developer who specializes in{" "}
-            <span className="text-white font-semibold bg-purple-500/20 px-2 py-0.5 rounded">React/Next.js</span> with a focus on
-            modern, high-performing frontends.
-          </p>
-          <p>
-            At the time of writing, RTS game{" "}
-            <span className="text-white font-semibold bg-blue-500/20 px-2 py-0.5 rounded">War of the Elector V 1.4</span> is out
-            now. I built this with my favorite tech stack,{" "}
-            <span className="text-blue-400 font-medium">Next/Tailwind</span> and{" "}
-            <span className="text-purple-400 font-medium">Prisma/PostgreSQL</span>. I'm something of a JS framework generalist - I like to build in{" "}
-            <span className="text-green-400 font-medium">Vue.js</span> and adore{" "}
-            <span className="text-orange-400 font-medium">Svelte</span> whenever I get to use it.
-          </p>
-          <p>
-            I also have a strong interest/background in{" "}
-            <span className="text-white font-semibold bg-pink-500/20 px-2 py-0.5 rounded">QA and testing</span>. Having built my own
-            full-stack projects, I'm passionate about software quality and end-to-end
-            reliability.
-          </p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="glass-card rounded-2xl p-6 md:p-8 lg:p-10"
+        >
+          <div className="space-y-4 sm:space-y-5 md:space-y-6 text-white/95 leading-relaxed text-base sm:text-lg md:text-xl">
+            <p>
+              Hi, I'm <span className="text-purple-400 font-semibold">Klaus</span>! I'm a full-stack developer who specializes in{" "}
+              <span className="text-white font-semibold bg-purple-500/30 px-2 py-1 rounded-md">React/Next.js</span> with a focus on
+              modern, high-performing frontends.
+            </p>
+            <p>
+              At the time of writing, RTS game{" "}
+              <span className="text-white font-semibold bg-blue-500/30 px-2 py-1 rounded-md">War of the Elector V 1.4</span> is out
+              now. I built this with my favorite tech stack,{" "}
+              <span className="text-blue-400 font-medium">Next/Tailwind</span> and{" "}
+              <span className="text-purple-400 font-medium">Prisma/PostgreSQL</span>. I'm something of a JS framework generalist - I like to build in{" "}
+              <span className="text-green-400 font-medium">Vue.js</span> and adore{" "}
+              <span className="text-orange-400 font-medium">Svelte</span> whenever I get to use it.
+            </p>
+            <p>
+              I also have a strong interest/background in{" "}
+              <span className="text-white font-semibold bg-pink-500/30 px-2 py-1 rounded-md">QA and testing</span>. Having built my own
+              full-stack projects, I'm passionate about software quality and end-to-end
+              reliability.
+            </p>
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Feature Cards */}
@@ -104,11 +91,7 @@ export function AboutContent() {
             className="relative group"
           >
             <div 
-              className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-black/70 backdrop-blur-2xl border-2 hover:border-white/50 transition-all h-full relative"
-              style={{
-                borderColor: '#a855f760',
-                boxShadow: '0 0 30px rgba(168, 85, 247, 0.3), 0 0 60px rgba(168, 85, 247, 0.15)',
-              }}
+              className="p-5 sm:p-6 md:p-8 rounded-2xl glass-card hover:border-white/30 transition-all h-full relative"
             >
               {/* Icon */}
               <motion.div
@@ -143,11 +126,7 @@ export function AboutContent() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
-        className="p-5 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-2xl border-2"
-        style={{
-          borderColor: '#a855f760',
-          boxShadow: '0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(168, 85, 247, 0.15)',
-        }}
+        className="p-5 sm:p-6 md:p-8 rounded-2xl glass-card"
       >
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center flex-shrink-0">
