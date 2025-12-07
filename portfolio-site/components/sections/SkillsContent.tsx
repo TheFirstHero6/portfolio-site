@@ -37,7 +37,7 @@ const skillCategories = [
 const stats = [
   { value: 9990, label: "Lines of Code", suffix: "+" },
   { value: 4.0, label: "GPA", suffix: "" },
-  { value: 4, label: "Years", suffix: "+" },
+  { value: 2, label: "Years", suffix: "+" },
   { value: 99, label: "Satisfaction", suffix: "%" },
 ];
 
